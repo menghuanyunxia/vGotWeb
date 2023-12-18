@@ -47,8 +47,6 @@ export const TYPE_CONFIGS = [
       'color-selector': [
         'tableHeaderBgColor',
         'tableItemBgColor',
-        'enableTableCrossBG',
-        'tableItemSubBgColor',
         'tableHeaderFontColor',
         'tableFontColor',
         'tableBorderColor',
@@ -65,8 +63,7 @@ export const TYPE_CONFIGS = [
         'tableColumnMode',
         'showIndex',
         'indexLabel',
-        'tableColTooltip',
-        'showTableHeader'
+        'tableColTooltip'
       ],
       'title-selector-ant-v': [
         'show',
@@ -98,8 +95,6 @@ export const TYPE_CONFIGS = [
       'color-selector': [
         'tableHeaderBgColor',
         'tableItemBgColor',
-        'enableTableCrossBG',
-        'tableItemSubBgColor',
         'tableHeaderFontColor',
         'tableFontColor',
         'tableBorderColor',
@@ -118,8 +113,7 @@ export const TYPE_CONFIGS = [
         'tableColumnMode',
         'showIndex',
         'indexLabel',
-        'tableColTooltip',
-        'showTableHeader'
+        'tableColTooltip'
       ],
       'title-selector-ant-v': [
         'show',
@@ -152,8 +146,6 @@ export const TYPE_CONFIGS = [
       'color-selector': [
         'tableHeaderBgColor',
         'tableItemBgColor',
-        'enableTableCrossBG',
-        'tableItemSubBgColor',
         'tableHeaderFontColor',
         'tableFontColor',
         'tableBorderColor',
@@ -251,7 +243,6 @@ export const TYPE_CONFIGS = [
     propertyInner: {
       'color-selector': [
         'quotaColor',
-        'quotaSuffixColor',
         'dimensionColor'
       ],
       'size-selector-ant-v': [
@@ -268,13 +259,7 @@ export const TYPE_CONFIGS = [
         'dimensionFontShadow',
         'spaceSplit',
         'hPosition',
-        'vPosition',
-        'quotaSuffix',
-        'quotaSuffixFontSize',
-        'quotaSuffixFontFamily',
-        'quotaSuffixFontStyle',
-        'quotaSuffixLetterSpace',
-        'quotaSuffixFontShadow'
+        'vPosition'
       ],
       'title-selector-ant-v': [
         'show',
@@ -1602,6 +1587,7 @@ export const TYPE_CONFIGS = [
       'x-axis-selector-ant-v': [
         'show',
         'position',
+        'nameTextStyle',
         'splitLine',
         'axisForm',
         'axisLabel'
@@ -1700,8 +1686,7 @@ export const TYPE_CONFIGS = [
       'split-selector-ant-v': [
         'splitForm',
         'name',
-        'lineStyle',
-        'axisValue'
+        'lineStyle'
       ]
     }
   },
@@ -1988,8 +1973,6 @@ export const TYPE_CONFIGS = [
       'color-selector': [
         'tableHeaderBgColor',
         'tableItemBgColor',
-        'enableTableCrossBG',
-        'tableItemSubBgColor',
         'tableHeaderFontColor',
         'tableFontColor',
         'tableBorderColor',
@@ -2004,8 +1987,7 @@ export const TYPE_CONFIGS = [
         'tableColumnWidth',
         'showIndex',
         'indexLabel',
-        'tableAutoBreakLine',
-        'showTableHeader'
+        'tableAutoBreakLine'
       ],
       'title-selector': [
         'show',
@@ -2033,8 +2015,6 @@ export const TYPE_CONFIGS = [
       'color-selector': [
         'tableHeaderBgColor',
         'tableItemBgColor',
-        'enableTableCrossBG',
-        'tableItemSubBgColor',
         'tableHeaderFontColor',
         'tableFontColor',
         'tableBorderColor',
@@ -2051,8 +2031,7 @@ export const TYPE_CONFIGS = [
         'tableColumnWidth',
         'showIndex',
         'indexLabel',
-        'tableAutoBreakLine',
-        'showTableHeader'
+        'tableAutoBreakLine'
       ],
       'title-selector': [
         'show',
@@ -2129,7 +2108,6 @@ export const TYPE_CONFIGS = [
 
       'color-selector': [
         'quotaColor',
-        'quotaSuffixColor',
         'dimensionColor'
       ],
       'size-selector': [
@@ -2146,13 +2124,7 @@ export const TYPE_CONFIGS = [
         'dimensionFontShadow',
         'spaceSplit',
         'hPosition',
-        'vPosition',
-        'quotaSuffix',
-        'quotaSuffixFontSize',
-        'quotaSuffixFontFamily',
-        'quotaSuffixFontStyle',
-        'quotaSuffixLetterSpace',
-        'quotaSuffixFontShadow'
+        'vPosition'
       ],
       'title-selector': [
         'show',
@@ -3113,8 +3085,7 @@ export const TYPE_CONFIGS = [
         'axisLine',
         'axisLabel',
         'splitLine',
-        'splitArea',
-        'axisValue'
+        'splitArea'
       ],
       'title-selector': [
         'show',
@@ -3481,43 +3452,7 @@ export function getColors(chart, colors, reset) {
         isCustom: false
       })
     }
-  } else if (chart.type === 'scatter') {
-    const xAxis = JSON.parse(chart.xaxis)
-    if (chart.data && chart.render === 'antv' && xAxis && xAxis.length > 0 && xAxis[0].groupType === 'q') {
-      const data = chart.data.data
-      const groups = []
-      for (let i = 0; i < data.length; i++) {
-        const d = data[i]
-        if (!groups.includes(d.category)) {
-          groups.push(d.category)
-        }
-      }
-      for (let i = 0; i < groups.length; i++) {
-        const s = groups[i]
-        seriesColors.push({
-          name: s,
-          color: colors[i % colors.length],
-          isCustom: false
-        })
-      }
-    } else {
-      if (Object.prototype.toString.call(chart.yaxis) === '[object Array]') {
-        series = JSON.parse(JSON.stringify(chart.yaxis))
-      } else {
-        series = JSON.parse(chart.yaxis)
-      }
-      if (series) {
-        for (let i = 0; i < series.length; i++) {
-          const s = series[i]
-          seriesColors.push({
-            name: s.name,
-            color: colors[i % colors.length],
-            isCustom: false
-          })
-        }
-      }
-    }
-  } else if ((includesAny(chart.type, 'bar', 'radar', 'area')) && !chart.type.includes('group')) {
+  } else if (includesAny(chart.type, 'bar', 'scatter', 'radar', 'area') && !chart.type.includes('group')) {
     if (Object.prototype.toString.call(chart.yaxis) === '[object Array]') {
       series = JSON.parse(JSON.stringify(chart.yaxis))
     } else {
@@ -3564,6 +3499,7 @@ export function getColors(chart, colors, reset) {
       // if (customSortData && customSortData.length > 0) {
       //   data = customSort(customSortData, data)
       // }
+
       for (let i = 0; i < data.length; i++) {
         const s = data[i]
         seriesColors.push({

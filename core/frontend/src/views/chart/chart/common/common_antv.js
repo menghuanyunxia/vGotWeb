@@ -246,9 +246,6 @@ export function getLabel(chart) {
                 contentItems.push(valueFormatter(param.value, formatterCfg))
               }
               res = contentItems.join('\n')
-            } else if (chart.type === 'scatter' && xAxis && xAxis.length > 0 && xAxis[0].groupType === 'q') {
-              // 针对散点图
-              res = param.field
             } else {
               for (let i = 0; i < yAxis.length; i++) {
                 const f = yAxis[i]
@@ -316,17 +313,12 @@ export function getTooltip(chart) {
       const t = JSON.parse(JSON.stringify(customAttr.tooltip))
       if (t.show) {
         tooltip = {}
-        let xAxis, yAxis, extStack, xAxisExt
+        let xAxis, yAxis, extStack
 
         try {
           xAxis = JSON.parse(chart.xaxis)
         } catch (e) {
           xAxis = JSON.parse(JSON.stringify(chart.xaxis))
-        }
-        try {
-          xAxisExt = JSON.parse(chart.xaxisExt)
-        } catch (e) {
-          xAxisExt = JSON.parse(JSON.stringify(chart.xaxisExt))
         }
         try {
           yAxis = JSON.parse(chart.yaxis)
@@ -475,18 +467,14 @@ export function getTooltip(chart) {
           }
           //
           if (chart.type === 'scatter' && xAxis && xAxis.length > 0 && xAxis[0].groupType === 'q') {
-            tooltip.fields = ['x', 'category', 'value', 'group', 'field']
+            tooltip.fields = ['x', 'category', 'value', 'group']
             tooltip.customContent = (title, data) => {
               const key1 = xAxis[0]?.name
-              let key2, v1, v2, subGroup
-
-              let hasSubGroup = false
+              let key2, v1, v2
 
               if (data && data.length > 0) {
                 title = data[0].data.category
                 key2 = data[0].data.group
-                subGroup = data[0].data.field
-                hasSubGroup = xAxisExt.length > 0
 
                 const fx = xAxis[0]
                 if (fx.formatterCfg) {
@@ -511,12 +499,6 @@ export function getTooltip(chart) {
               return `
                      <div>
                        <div class="g2-tooltip-title">${title}</div>
-                       ` +
-                      (hasSubGroup
-                        ? `<div class="g2-tooltip-item">
-                                <span class="g2-tooltip-name">${xAxisExt[0].name}:</span><span class="g2-tooltip-value">${subGroup}</span>
-                            </div>` : ``) +
-                    `
                        <div class="g2-tooltip-item">
                            <span class="g2-tooltip-name">${key1}:</span><span class="g2-tooltip-value">${v1}</span>
                        </div>
@@ -696,11 +678,6 @@ export function getXAxis(chart) {
             }
           }
         } : null
-
-        if (a.axisLabel.show && chart.type === 'bidirectional-bar') {
-          label.rotate = 0
-          label.style.textAlign = 'start'
-        }
 
         axis = {
           position: transAxisPosition(chart, a),

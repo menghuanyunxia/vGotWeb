@@ -152,10 +152,9 @@
 </template>
 
 <script>
-import {compareItem} from '../../utils/compare'
+import {compareItem} from '@/utils/compare'
 import {getItemType, getOriginFieldName, resetValueFormatter, quotaViews} from './utils'
 import FieldErrorTips from './FieldErrorTips'
-import {formatterItem} from "../../utils/map";
 
 export default {
   name: 'QuotaExtItem',
@@ -189,7 +188,6 @@ export default {
   data() {
     return {
       compareItem: compareItem,
-      formatterItem: formatterItem,
       disableEditCompare: false,
       tagType: 'success',
       quotaViews: quotaViews
@@ -217,9 +215,6 @@ export default {
     init() {
       if (!this.item.compareCalc) {
         this.item.compareCalc = JSON.parse(JSON.stringify(this.compareItem))
-      }
-      if (!this.item.formatterCfg) {
-        this.item.formatterCfg = JSON.parse(JSON.stringify(this.formatterItem))
       }
     },
     isEnableCompare() {

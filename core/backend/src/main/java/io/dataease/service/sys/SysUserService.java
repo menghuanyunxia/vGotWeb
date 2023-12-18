@@ -1,8 +1,8 @@
 package io.dataease.service.sys;
 
 import io.dataease.auth.api.dto.CurrentUserDto;
-import io.dataease.auth.service.AuthUserService;
-import io.dataease.auth.service.ExtAuthService;
+import io.dataease.commons.service.AuthUserService;
+import io.dataease.commons.service.ExtAuthService;
 import io.dataease.commons.constants.AuthConstants;
 import io.dataease.commons.exception.DEException;
 import io.dataease.commons.utils.AuthUtils;
@@ -62,10 +62,6 @@ public class SysUserService {
 
     @Resource
     private AuthUserService authUserService;
-
-    public Long uidByAccount(String account) {
-        return extSysUserMapper.queryUserId(account);
-    }
 
 
     public List<SysUserGridResponse> query(UserGridRequest request) {

@@ -1,6 +1,6 @@
 package io.dataease.auth.config.cas;
 
-import io.dataease.auth.service.impl.ShiroServiceImpl;
+import io.dataease.commons.service.impl.ShiroServiceImpl;
 import io.dataease.commons.utils.CommonBeanFactory;
 import io.dataease.commons.utils.ServletUtils;
 import io.dataease.service.system.SystemParameterService;

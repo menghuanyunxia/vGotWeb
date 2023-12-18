@@ -1,4 +1,4 @@
-package io.dataease.plugins.common.util;
+package io.dataease.plugins.loader;
 
 import io.dataease.plugins.common.base.domain.MyPlugin;
 import org.springframework.beans.factory.annotation.Autowired;

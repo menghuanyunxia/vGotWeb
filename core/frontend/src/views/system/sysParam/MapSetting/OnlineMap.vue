@@ -114,6 +114,7 @@ export default {
       })
     },
     initLoad() {
+      console.log('map load ...')
       queryMapKey().then(res => {
         this.key = res.data
         this.loadMap()

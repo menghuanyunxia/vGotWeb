@@ -1,6 +1,6 @@
 package io.dataease.service.message.service.strategy;
 
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.service.message.service.SendService;
 import io.dataease.service.system.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;

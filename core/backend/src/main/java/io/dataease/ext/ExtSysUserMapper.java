@@ -11,6 +11,4 @@ public interface ExtSysUserMapper {
     List<String> ldapUserNames(Integer from);
 
     String queryAdminEmail();
-
-    Long queryUserId(String username);
 }

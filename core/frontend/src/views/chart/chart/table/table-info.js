@@ -1,4 +1,4 @@
-import { TableSheet, S2Event, PivotSheet, DataCell, EXTRA_FIELD, TOTAL_VALUE } from '@antv/s2'
+import { TableSheet, S2Event, PivotSheet, DataCell, EXTRA_FIELD, TOTAL_VALUE, BaseEvent } from '@antv/s2'
 import { getCustomTheme, getSize } from '@/views/chart/chart/common/common_table'
 import { DEFAULT_COLOR_CASE, DEFAULT_TOTAL } from '@/views/chart/chart/chart'
 import { formatterItem, valueFormatter } from '@/views/chart/chart/formatter'
@@ -109,15 +109,6 @@ export function baseTableInfo(s2, container, chart, action, tableData, pageInfo)
         viewMeta.fieldValue = (pageInfo.pageSize * (pageInfo.page - 1)) + viewMeta.rowIndex + 1
       }
       return new DataCell(viewMeta, viewMeta?.spreadsheet)
-    }
-  }
-  // 隐藏表头，保留顶部的分割线, 禁用表头横向 resize
-  if (customAttr.size.showTableHeader === false) {
-    s2Options.style.colCfg.height = 1
-    s2Options.interaction = {
-      resize: {
-        colCellVertical: false
-      }
     }
   }
 
@@ -290,19 +281,6 @@ export function baseTableNormal(s2, container, chart, action, tableData) {
         } else {
           node.label = customAttr.size.indexLabel
         }
-      }
-      return node.belongsCell
-    }
-    s2Options.dataCell = (viewMeta) => {
-      return new DataCell(viewMeta, viewMeta?.spreadsheet)
-    }
-  }
-  // 隐藏表头，保留顶部的分割线, 禁用表头横向 resize
-  if (customAttr.size.showTableHeader === false) {
-    s2Options.style.colCfg.height = 1
-    s2Options.interaction = {
-      resize: {
-        colCellVertical: false
       }
     }
   }

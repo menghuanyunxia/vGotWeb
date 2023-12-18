@@ -218,7 +218,7 @@
           <el-collapse-item
             v-show="showPropertiesCollapse(['split-selector', 'split-selector-ant-v'])"
             name="split"
-            :title="$t('chart.axis')"
+            :title="$t('chart.split')"
           >
             <split-selector
               v-if="showProperties('split-selector')"
@@ -764,16 +764,6 @@ span {
 
 .form-item ::v-deep .el-form-item__label {
   font-size: 12px;
-}
-
-.form-item {
-  ::v-deep .el-form-item__content {
-    .el-checkbox {
-      .el-checkbox__label {
-        font-size: 12px;
-      }
-    }
-  }
 }
 
 .no-properties {

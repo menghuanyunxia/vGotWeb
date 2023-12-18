@@ -1,8 +1,8 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
 
 import com.google.common.util.concurrent.RateLimiter;
-import io.dataease.auth.service.DeLimitService;
+import io.dataease.commons.service.DeLimitService;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;

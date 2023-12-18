@@ -43,16 +43,16 @@
         secondary
         @click="cancel()"
       >{{
-        $t('commons.cancel')
-      }}
+          $t('commons.cancel')
+        }}
       </deBtn>
       <deBtn
         type="primary"
-        :disabled="!activeTemplate"
         @click="save()"
+        :disabled="!activeTemplate"
       >{{
-        $t('commons.confirm')
-      }}
+          $t('commons.confirm')
+        }}
       </deBtn>
     </el-row>
   </div>

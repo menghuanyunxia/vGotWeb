@@ -1,6 +1,6 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
-import io.dataease.auth.service.ShiroService;
+import io.dataease.commons.service.ShiroService;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,6 @@ public class ShiroServiceImpl implements ShiroService {
         filterChainDefinitionMap.put("/link/**", ANON);
         filterChainDefinitionMap.put("/index.html", ANON);
         filterChainDefinitionMap.put("/link.html", ANON);
-        filterChainDefinitionMap.put("/mobile.html", ANON);
         filterChainDefinitionMap.put("/board/**", ANON);
         filterChainDefinitionMap.put("/websocket/**", ANON);
         filterChainDefinitionMap.put("/system/defaultLoginType", ANON);

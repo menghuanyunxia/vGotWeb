@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.dataease.auth.api.dto.CurrentRoleDto;
 import io.dataease.auth.entity.SysUserEntity;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.commons.utils.AuthUtils;
 import io.dataease.plugins.common.base.domain.DatasetTable;
 import io.dataease.plugins.common.base.domain.DatasetTableField;
@@ -12,7 +12,7 @@ import io.dataease.plugins.common.request.permission.DataSetRowPermissionsTreeDT
 import io.dataease.plugins.common.request.permission.DatasetRowPermissionsTreeItem;
 import io.dataease.plugins.common.request.permission.DatasetRowPermissionsTreeObj;
 import io.dataease.plugins.common.request.permission.DatasetRowPermissionsTreeRequest;
-import io.dataease.plugins.common.util.SpringContextUtil;
+import io.dataease.plugins.config.SpringContextUtil;
 import io.dataease.plugins.xpack.auth.service.RowPermissionTreeService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;

@@ -152,9 +152,11 @@ public class PanelGroupService {
     }
 
     public List<PanelGroupDTO> defaultTree(PanelGroupRequest panelGroupRequest) {
-        String userId = String.valueOf(AuthUtils.getUser().getUserId());
-        panelGroupRequest.setUserId(userId);
-        panelGroupRequest.setIsAdmin(AuthUtils.getUser().getIsAdmin());
+//        String userId = String.valueOf(AuthUtils.getUser().getUserId());
+//        panelGroupRequest.setUserId(userId);
+//        panelGroupRequest.setIsAdmin(AuthUtils.getUser().getIsAdmin());
+        panelGroupRequest.setUserId("1");
+        panelGroupRequest.setIsAdmin(true);
         List<PanelGroupDTO> panelGroupDTOList = extPanelGroupMapper.panelGroupListDefault(panelGroupRequest);
         return TreeUtils.mergeTree(panelGroupDTOList, "default_panel");
     }
@@ -201,7 +203,37 @@ public class PanelGroupService {
             newDefaultPanel.setSource(request.getId());
             newDefaultPanel.setCreateBy(AuthUtils.getUser().getUsername());
             newDefaultPanel.setCreateTime(System.currentTimeMillis());
-            checkPanelName(newDefaultPanel.getName(), newDefaultPanel.getPid(), PanelConstants.OPT_TYPE_INSERT, newDefaultPanel.getId(), newDefaultPanel.getNodeType());
+            checkPanelName(newDefaultPanel.getName(), newDefaultPanel.getPid(), PanelConstants.OPT_TYPE_INSERT, panelId, newDefaultPanel.getNodeType());
+            String sourcePanelId = request.getId(); //源仪表板ID
+            String copyId = UUIDUtil.getUUIDAsString(); // 本次复制执行ID
+            // copy panelView
+            extPanelViewMapper.copyFromPanel(panelId, sourcePanelId, copyId);
+            // 复制视图 chart_view
+            extChartViewMapper.chartCopyWithPanel(copyId);
+
+            // 复制视图字段 chart_view_field
+            extChartViewMapper.chartFiledCopyWithPanel(copyId);
+            // 替换panel_data viewId 数据
+            List<PanelView> panelViewList = panelViewService.findPanelViews(copyId);
+            // 复制模板缓存数据
+            extPanelGroupExtendDataMapper.copyWithCopyId(copyId);
+            if (CollectionUtils.isNotEmpty(panelViewList)) {
+                String panelData = newDefaultPanel.getPanelData();
+                // 替换panel_data viewId 数据  并保存
+                for (PanelView panelView : panelViewList) {
+                    panelData = panelData.replaceAll(panelView.getCopyFromView(), panelView.getChartViewId());
+                }
+
+                newDefaultPanel.setPanelData(panelData);
+                // 复制跳转信息 copy panel_link_jump panel_link_jump_info  panel_link_jump_target_view_info
+                extPanelLinkJumpMapper.copyLinkJump(copyId);
+                extPanelLinkJumpMapper.copyLinkJumpInfo(copyId);
+                extPanelLinkJumpMapper.copyLinkJumpTarget(copyId);
+                // 复制联动信息 copy panel_view_linkage_field panel_view_linkage
+                extPanelViewLinkageMapper.copyViewLinkage(copyId);
+                extPanelViewLinkageMapper.copyViewLinkageField(copyId);
+            }
+
             panelGroupMapper.insertSelective(newDefaultPanel);
             // 清理权限缓存
             clearPermissionCache();
@@ -218,6 +250,7 @@ public class PanelGroupService {
                     request.setPid(panel.getPid());
                 }
             }
+
             DeLogUtils.save(SysLogConstants.OPERATE_TYPE.CREATE, sourceType, panelId, request.getPid(), null, null);
         } else if ("move".equals(request.getOptType())) {
             PanelGroupWithBLOBs panelInfo = panelGroupMapper.selectByPrimaryKey(request.getId());
@@ -306,7 +339,7 @@ public class PanelGroupService {
         extPanelGroupMapper.deleteCircleView(id, nodeType);
         extPanelGroupMapper.deleteCircleViewCache(id, nodeType);
         // 同时会删除对应默认仪表盘
-        extPanelGroupMapper.deleteLinkDefaultCircle(id);
+//        extPanelGroupMapper.deleteLinkDefaultCircle(id);
         extPanelGroupMapper.deleteCircle(id, nodeType);
         storeService.removeByPanelId(id);
         shareService.delete(id, null);
@@ -329,11 +362,16 @@ public class PanelGroupService {
         PanelGroupDTO panelGroup = extPanelGroupMapper.findOneWithPrivileges(panelId, String.valueOf(AuthUtils.getUser().getUserId()));
         // 默认仪表板取源仪表板样式
         if (panelGroup != null && StringUtils.isNotEmpty(panelGroup.getSource())) {
-            PanelGroupDTO sourcePanel = extPanelGroupMapper.findOneWithPrivileges(panelGroup.getSource(), String.valueOf(AuthUtils.getUser().getUserId()));
-            panelGroup.setPanelData(sourcePanel.getPanelData());
-            panelGroup.setPanelStyle(sourcePanel.getPanelStyle());
-            panelGroup.setSourcePanelName(sourcePanel.getName());
+//            PanelGroupDTO sourcePanel = extPanelGroupMapper.findOneWithPrivileges(panelGroup.getSource(), String.valueOf(AuthUtils.getUser().getUserId()));
+//            if (sourcePanel!=null){
+//                panelGroup.setPanelData(sourcePanel.getPanelData());
+//                panelGroup.setPanelStyle(sourcePanel.getPanelStyle());
+//                panelGroup.setSourcePanelName(sourcePanel.getName());
+//            }else {
+                panelGroup.setSourcePanelName(panelGroup.getSource());
+//            }
         }
+
         if (panelGroup != null) {
             panelGroup.setWatermarkInfo(panelWatermarkMapper.selectByPrimaryKey("system_default"));
         }

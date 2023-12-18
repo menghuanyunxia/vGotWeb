@@ -3,7 +3,7 @@ package io.dataease.plugins.server;
 import cn.hutool.core.util.RandomUtil;
 import io.dataease.auth.entity.SysUserEntity;
 import io.dataease.auth.entity.TokenInfo;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.auth.util.JWTUtils;
 import io.dataease.commons.constants.SysLogConstants;
 import io.dataease.commons.utils.DeLogUtils;

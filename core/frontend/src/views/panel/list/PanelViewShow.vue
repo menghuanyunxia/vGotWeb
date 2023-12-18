@@ -10,7 +10,6 @@
       v-if="panelInfo.name.length>0"
       class="panel-design"
     >
-
       <el-row
         v-if="showType === 2"
         class="panel-design-head panel-share-head"
@@ -42,59 +41,59 @@
                 v-if="panelInfo.isDefault"
                 style="color: green;font-size: 12px"
               >({{ $t('panel.default_panel_name') }}:{{ panelInfo.defaultPanelName }})</span>
-              <span
-                v-if="panelInfo.sourcePanelName"
-                style="color: green;font-size: 12px"
-              >&nbsp;({{ $t('panel.source_panel_name') }}:{{ panelInfo.sourcePanelName }})</span>
+<!--              <span-->
+<!--                v-if="panelInfo.sourcePanelName"-->
+<!--                style="color: green;font-size: 12px"-->
+<!--              >&nbsp;({{ $t('panel.source_panel_name') }}:{{ panelInfo.sourcePanelName }})</span>-->
             </div>
             <div class="panel-create-cont">
-              <span
-                v-if="!hasStar && panelInfo && showType !== 1&&panelInfo.status==='publish'"
-                style="margin-left: 9px"
-              >
-                <el-tooltip :content="$t('panel.store')">
-                  <i
-                    class="el-icon-star-off"
-                    @click="star"
-                  />
-                </el-tooltip>
-              </span>
-              <span
-                v-if="hasStar && panelInfo && showType !== 1&&panelInfo.status==='publish'"
-                style="margin-left: 9px"
-              >
-                <el-tooltip :content="$t('commons.cancel') + $t('panel.store')">
-                  <i
-                    class="el-icon-star-on"
-                    @click="unstar"
-                  />
-                </el-tooltip>
-              </span>
-              <template v-if="panelInfo.creatorName">
-                <el-divider
-                  style="margin: 0 16px;"
-                  direction="vertical"
-                />
-                <span
-                  :title="panelInfo.creatorName"
-                  class="panel-create"
-                >
-                  {{ $t('panel.create_by') + ':' + panelInfo.creatorName }}
-                </span>
-              </template>
-              <el-popover
-                placement="right-start"
-                width="400"
-                trigger="click"
-              >
-                <panel-detail-info />
-                <svg-icon
-                  slot="reference"
-                  style="margin-left: 4px;cursor: pointer;font-size: 14px;"
-                  class="icon-class"
-                  icon-class="icon_info_outlined"
-                />
-              </el-popover>
+<!--              <span-->
+<!--                v-if="!hasStar && panelInfo && showType !== 1&&panelInfo.status==='publish'"-->
+<!--                style="margin-left: 9px"-->
+<!--              >-->
+<!--                <el-tooltip :content="$t('panel.store')">-->
+<!--                  <i-->
+<!--                    class="el-icon-star-off"-->
+<!--                    @click="star"-->
+<!--                  />-->
+<!--                </el-tooltip>-->
+<!--              </span>-->
+<!--              <span-->
+<!--                v-if="hasStar && panelInfo && showType !== 1&&panelInfo.status==='publish'"-->
+<!--                style="margin-left: 9px"-->
+<!--              >-->
+<!--                <el-tooltip :content="$t('commons.cancel') + $t('panel.store')">-->
+<!--                  <i-->
+<!--                    class="el-icon-star-on"-->
+<!--                    @click="unstar"-->
+<!--                  />-->
+<!--                </el-tooltip>-->
+<!--              </span>-->
+<!--              <template v-if="panelInfo.creatorName">-->
+<!--                <el-divider-->
+<!--                  style="margin: 0 16px;"-->
+<!--                  direction="vertical"-->
+<!--                />-->
+<!--&lt;!&ndash;                <span&ndash;&gt;-->
+<!--&lt;!&ndash;                  :title="panelInfo.creatorName"&ndash;&gt;-->
+<!--&lt;!&ndash;                  class="panel-create"&ndash;&gt;-->
+<!--&lt;!&ndash;                >&ndash;&gt;-->
+<!--&lt;!&ndash;                  {{ $t('panel.create_by') + ':' + panelInfo.creatorName }}&ndash;&gt;-->
+<!--&lt;!&ndash;                </span>&ndash;&gt;-->
+<!--              </template>-->
+<!--              <el-popover-->
+<!--                placement="right-start"-->
+<!--                width="400"-->
+<!--                trigger="click"-->
+<!--              >-->
+<!--                <panel-detail-info />-->
+<!--&lt;!&ndash;                <svg-icon&ndash;&gt;-->
+<!--&lt;!&ndash;                  slot="reference"&ndash;&gt;-->
+<!--&lt;!&ndash;                  style="margin-left: 4px;cursor: pointer;font-size: 14px;"&ndash;&gt;-->
+<!--&lt;!&ndash;                  class="icon-class"&ndash;&gt;-->
+<!--&lt;!&ndash;                  icon-class="icon_info_outlined"&ndash;&gt;-->
+<!--&lt;!&ndash;                />&ndash;&gt;-->
+<!--              </el-popover>-->
             </div>
 
           </el-col>
@@ -113,7 +112,7 @@
             </span>
 
             <span
-              v-if="showType !== 1"
+              v-if="hasDataPermission('manage',panelInfo.privileges)&&activeTab==='PanelList'&&!panelInfo.sourcePanelName"
               style="float: right;margin-right: 10px"
             >
               <de-btn
@@ -281,7 +280,7 @@
         style="height: 100%; background-color: var(--ContentBG);"
         class="custom-position"
       >
-        {{ $t('panel.select_panel_from_left') }}
+        <!-- {{ $t('panel.select_panel_from_left') }} -->
       </el-row>
     </el-col>
 
@@ -499,7 +498,6 @@ export default {
     },
     fullscreen(newVal, oldVla) {
       // 刷新 进行重新渲染
-      this.$store.commit('setPreviewVisible', newVal)
       this.showMain = false
       this.$nextTick(() => {
         this.showMain = true
@@ -937,20 +935,18 @@ export default {
   margin-right: 5px;
 }
 
-.fullscreen {
-  transform: translate(0) !important;
-  .main_view {
-    z-index: 0;
-  }
-}
-
 .fullscreen-visual-selects {
   .VisualSelects {
     top: inherit !important;
     left: inherit !important;
   }
+  .el-tree-select-popper {
+    left: 0 !important;
+    top: inherit !important;
+  }
 
-  .track-menu {
+  .track-menu,
+  .coustom-date-picker {
     left: inherit !important;
   }
 }

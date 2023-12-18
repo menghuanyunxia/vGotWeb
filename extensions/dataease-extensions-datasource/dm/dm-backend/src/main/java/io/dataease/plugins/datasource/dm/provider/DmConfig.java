@@ -13,8 +13,9 @@ public class DmConfig extends JdbcConfiguration {
 
 
     public String getJdbc() {
-        return "jdbc:dm://HOST:PORT"
+        return "jdbc:dm://HOST:PORT/DATABASE"
                 .replace("HOST", getHost().trim())
-                .replace("PORT", getPort().toString());
+                .replace("PORT", getPort().toString())
+                .replace("DATABASE", getDataBase().trim());
     }
 }

@@ -87,13 +87,8 @@ class TextSelectServiceImpl extends WidgetService {
     })
   }
 
-  getParam(element, val) {
-    let value = null
-    if (!val) {
-      value = this.fillValueDerfault(element)
-    } else {
-      value = [val]
-    }
+  getParam(element) {
+    const value = this.fillValueDerfault(element)
     const param = {
       component: element,
       value: !value ? [] : Array.isArray(value) ? value : value.toString().split(','),

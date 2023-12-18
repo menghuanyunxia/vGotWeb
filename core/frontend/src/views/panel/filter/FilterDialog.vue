@@ -51,12 +51,11 @@
               <el-row>
                 <el-tree
                   v-if="showDomType === 'tree'"
-                  ref="datasetTreeRef"
                   :default-expanded-keys="expandedArray"
                   node-key="id"
                   :data="tempTreeData || treeData"
                   :props="defaultProps"
-                  :filter-node-method="filterNode"
+
                   @node-click="handleNodeClick"
                 >
                   <span
@@ -268,7 +267,6 @@
         <filter-head
           :element="currentElement"
           @dataset-name="dataSetName"
-          @required-change="requiredChange"
         />
 
         <filter-control
@@ -280,11 +278,7 @@
           :active-name="activeName"
         />
 
-        <filter-foot
-          :element="currentElement"
-          :control-attrs="myAttrs"
-          @widget-value-changed="widgetValChange"
-        />
+        <filter-foot :element="currentElement" />
 
       </div>
     </de-main-container>
@@ -394,17 +388,12 @@ export default {
       datasetParams: [],
       currentElement: null,
       tempTreeData: null,
-      showTips: false,
-      widgetValue: null,
-      required: false
+      showTips: false
     }
   },
   computed: {
     isTree() {
       return this.widget && this.widget.isTree
-    },
-    requiredMatch() {
-      return !this.required || !!this.widgetValue?.length
     },
     ...mapState([
       'componentData'
@@ -416,6 +405,7 @@ export default {
       if (values && values.length > 0) {
         const fieldIds = values.map(val => val.id)
         this.myAttrs.fieldId = fieldIds.join()
+        // this.myAttrs.dragItems = values
         this.myAttrs.activeName = this.activeName
         this.myAttrs.fieldsParent = this.fieldsParent
       } else if (this.myAttrs && this.myAttrs.fieldId) {
@@ -424,9 +414,7 @@ export default {
       }
       this.enableSureButton()
     },
-    requiredMatch(val) {
-      this.enableSureButton()
-    },
+
     keyWord(val) {
       this.expandedArray = []
       if (this.showDomType === 'field') {
@@ -458,7 +446,6 @@ export default {
   created() {
     this.widget = this.widgetInfo
     this.currentElement = JSON.parse(JSON.stringify(this.element))
-    this.required = !!this.currentElement.options.attrs.required
     this.myAttrs = this.currentElement.options.attrs
     this.treeNode(this.groupForm)
     this.loadViews()
@@ -477,16 +464,6 @@ export default {
     bus.$off('valid-values-change', this.validateFilterValue)
   },
   methods: {
-    widgetValChange(val) {
-      if (val === null) {
-        this.widgetValue = null
-        return
-      }
-      this.widgetValue = val.toString()
-    },
-    requiredChange(val) {
-      this.required = val
-    },
     dataSetName(tableId, callback) {
       let result = null
       if (tableId) {
@@ -574,15 +551,11 @@ export default {
     getTreeData(val) {
       if (val) {
         this.isTreeSearch = true
-        this.$refs.datasetTreeRef?.filter(val)
+        this.searchTree(val)
       } else {
         this.isTreeSearch = false
         this.treeNode(this.groupForm)
       }
-    },
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
     },
     searchTree(val) {
       this.expandedArray = []
@@ -938,26 +911,24 @@ export default {
 
     enableSureButton() {
       let valid = true
+
       const enable =
       this.currentElement.options.attrs.dragItems && this.currentElement.options.attrs.dragItems
         .length > 0
       if (this.widget.validDynamicValue) {
         valid = this.widget.validDynamicValue(this.currentElement)
       }
-      this.$emit('sure-button-status', enable && valid && this.requiredMatch)
+      this.$emit('sure-button-status', enable && valid)
     },
 
     getElementInfo() {
-      if (this.currentElement.options.attrs.selectFirst) {
-        this.currentElement.options.value = ''
-      }
       return this.currentElement
     },
 
     validateFilterValue(valid) {
       const enable = this.currentElement.options.attrs.dragItems && this.currentElement.options.attrs.dragItems
         .length > 0
-      this.$emit('sure-button-status', enable && valid && this.requiredMatch)
+      this.$emit('sure-button-status', enable && valid)
     }
 
   }

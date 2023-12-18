@@ -15,10 +15,11 @@ export function getChild(id) {
   })
 }
 
-export function buildMenus() {
+export function buildMenus(userId) {
   return request({
     url: 'api/dynamicMenu/menus',
-    method: 'post'
+    method: 'post',
+    data: userId
   })
 }
 

@@ -13,7 +13,6 @@
 <script>
 
 import { mapState } from 'vuex'
-import bus from '@/utils/bus'
 
 export default {
   props: {
@@ -30,8 +29,7 @@ export default {
   computed: {
     ...mapState([
       'pcComponentData',
-      'pcComponentGap',
-      'mobileLayoutStatus'
+      'pcComponentGap'
     ])
   },
   mounted() {
@@ -51,7 +49,6 @@ export default {
         this.element.y = 200
         this.element.auxiliaryMatrix = true
         this.$store.commit('addComponent', { component: this.element })
-        bus.$emit('mobile-status-change', 'addComponent', { component: this.element })
       } else {
         this.deleteComponent()
       }
@@ -61,9 +58,6 @@ export default {
       this.$emit('amRemoveItem')
       this.$store.commit('deleteComponentWithId', this.element.id)
       this.$store.commit('setCurComponent', { component: null, index: null })
-      if (this.mobileLayoutStatus) {
-        window.top.postMessage({ type: 'deleteComponentWithId', value: this.element.id }, '*')
-      }
     },
     updateMobileSelected(id, mobileSelected) {
       this.pcComponentData.forEach(item => {

@@ -1,38 +1,42 @@
 <template>
   <de-container>
     <de-aside-container type="panel">
-      <el-tabs
-        v-model="activeName"
-        class="tab-panel"
-        :stretch="true"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane name="PanelList">
-          <span slot="label"><i class="el-icon-document tablepanel-i" />{{ $t('panel.panel_list') }}</span>
-          <panel-list
-            v-show="activeName==='PanelList'"
-            ref="panelList"
-          />
-        </el-tab-pane>
-        <el-tab-pane
-          name="panels_star"
-          :lazy="true"
-        >
-          <span slot="label"><i class="el-icon-star-off tablepanel-i" />{{ $t('panel.store') }}</span>
-          <enshrine v-if="activeName==='panels_star'" />
-        </el-tab-pane>
-        <el-tab-pane
-          name="panels_share"
-          :lazy="true"
-        >
-          <span slot="label"><i class="el-icon-share tablepanel-i" />{{ $t('panel.share') }}</span>
-          <share-tree
-            v-if="showShare"
-            ref="share_tree"
-            :msg-panel-ids="msgPanelIds"
-          />
-        </el-tab-pane>
-      </el-tabs>
+      <panel-list
+        v-show="activeName=='PanelList'"
+        ref="panelList"
+      />
+<!--      <el-tabs-->
+<!--        v-model="activeName"-->
+<!--        class="tab-panel"-->
+<!--        :stretch="false"-->
+<!--        @tab-click="handleClick"-->
+<!--      >-->
+<!--        <el-tab-pane name="PanelList">-->
+<!--&lt;!&ndash;          <span slot="label"><i class="el-icon-document tablepanel-i"/>{{ $t('panel.panel_list') }}</span>&ndash;&gt;-->
+<!--          <panel-list-->
+<!--            v-show="activeName=='PanelList'"-->
+<!--            ref="panelList"-->
+<!--          />-->
+<!--        </el-tab-pane>-->
+<!--&lt;!&ndash;        <el-tab-pane&ndash;&gt;-->
+<!--&lt;!&ndash;          name="panels_star"&ndash;&gt;-->
+<!--&lt;!&ndash;          :lazy="true"&ndash;&gt;-->
+<!--&lt;!&ndash;        >&ndash;&gt;-->
+<!--&lt;!&ndash;          <span slot="label"><i class="el-icon-star-off tablepanel-i"/>{{ $t('panel.store') }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;          <enshrine v-if="activeName==='panels_star'"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        </el-tab-pane>&ndash;&gt;-->
+<!--&lt;!&ndash;        <el-tab-pane&ndash;&gt;-->
+<!--&lt;!&ndash;          name="panels_share"&ndash;&gt;-->
+<!--&lt;!&ndash;          :lazy="true"&ndash;&gt;-->
+<!--&lt;!&ndash;        >&ndash;&gt;-->
+<!--&lt;!&ndash;          <span slot="label"><i class="el-icon-share tablepanel-i"/>{{ $t('panel.share') }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;          <share-tree&ndash;&gt;-->
+<!--&lt;!&ndash;            v-if="showShare"&ndash;&gt;-->
+<!--&lt;!&ndash;            ref="share_tree"&ndash;&gt;-->
+<!--&lt;!&ndash;            :msg-panel-ids="msgPanelIds"&ndash;&gt;-->
+<!--&lt;!&ndash;          />&ndash;&gt;-->
+<!--&lt;!&ndash;        </el-tab-pane>&ndash;&gt;-->
+<!--      </el-tabs>-->
     </de-aside-container>
     <de-main-container>
       <PanelViewShow

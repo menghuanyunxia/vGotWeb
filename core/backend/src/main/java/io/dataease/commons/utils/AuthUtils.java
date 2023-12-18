@@ -3,13 +3,13 @@ package io.dataease.commons.utils;
 import io.dataease.auth.api.dto.CurrentRoleDto;
 import io.dataease.auth.api.dto.CurrentUserDto;
 import io.dataease.auth.entity.AuthItem;
-import io.dataease.auth.service.ExtAuthService;
-import io.dataease.auth.service.ProxyAuthService;
+import io.dataease.commons.service.ExtAuthService;
+import io.dataease.commons.service.ProxyAuthService;
 import io.dataease.commons.constants.DePermissionType;
 import io.dataease.commons.constants.ResourceAuthLevel;
 import io.dataease.commons.model.AuthURD;
 
-import io.dataease.plugins.common.util.SpringContextUtil;
+import io.dataease.plugins.config.SpringContextUtil;
 import io.dataease.plugins.xpack.auth.dto.request.XpackBaseTreeRequest;
 import io.dataease.plugins.xpack.auth.dto.response.XpackVAuthModelDTO;
 import io.dataease.plugins.xpack.auth.service.AuthXpackService;

@@ -9,6 +9,7 @@ public interface ExtSysMenuMapper {
 
     List<SimpleTreeNode> allNodes();
 
-
     List<SysMenu> querySysMenu();
+
+    List<SysMenu> querySysMenuOnUser();
 }

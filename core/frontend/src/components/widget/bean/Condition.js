@@ -13,6 +13,5 @@ export class Condition {
     this.viewIds = viewIds
     this.parameters = parameters
     this.isTree = isTree || false
-    this.requiredInvalid = false
   }
 }

@@ -90,10 +90,7 @@
             :content="$t('system_parameter_setting.test_mail_recipient')"
             placement="top"
           >
-            <svg-icon
-              icon-class="icon_info_outlined"
-              class="tips-not-absolute"
-            />
+            <svg-icon icon-class="icon_info_outlined" class="tips-not-absolute" />
           </el-tooltip>
         </template>
         <dePwd
@@ -109,10 +106,7 @@
             :content="$t('system_parameter_setting.to_enable_ssl')"
             placement="top"
           >
-            <svg-icon
-              icon-class="icon_info_outlined"
-              class="tips-not-absolute"
-            />
+            <svg-icon icon-class="icon_info_outlined" class="tips-not-absolute" />
           </el-tooltip>
         </el-checkbox>
 
@@ -124,10 +118,7 @@
             :content="$t('system_parameter_setting.to_enable_tsl')"
             placement="top"
           >
-            <svg-icon
-              icon-class="icon_info_outlined"
-              class="tips-not-absolute"
-            />
+            <svg-icon icon-class="icon_info_outlined" class="tips-not-absolute" />
           </el-tooltip>
         </el-checkbox>
       </el-form-item>

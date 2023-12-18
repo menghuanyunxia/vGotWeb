@@ -66,7 +66,7 @@
         @mousedown.stop.prevent="handleDown(handlei, $event)"
         @touchstart.stop.prevent="handleTouchDown(handlei, $event)"
       >
-        <slot :name="handlei" />
+        <slot :name="handlei"/>
       </div>
       <div
         :id="componentCanvasId"
@@ -74,22 +74,22 @@
         class="main-background"
       >
         <div
-          v-show="!element.editing"
+          v-show="!this.element.editing"
           class="de-drag-area de-drag-top"
           @mousedown="elementMouseDown"
         />
         <div
-          v-show="!element.editing && element.type !=='de-tabs'"
+          v-show="!this.element.editing && this.element.type !=='de-tabs'"
           class="de-drag-area de-drag-right"
           @mousedown="elementMouseDown"
         />
         <div
-          v-show="!element.editing && element.type !=='de-tabs'"
+          v-show="!this.element.editing && this.element.type !=='de-tabs'"
           class="de-drag-area de-drag-bottom"
           @mousedown="elementMouseDown"
         />
         <div
-          v-show="!element.editing && element.type !=='de-tabs'"
+          v-show="!this.element.editing && this.element.type !=='de-tabs'"
           class="de-drag-area de-drag-left"
           @mousedown="elementMouseDown"
         />
@@ -99,7 +99,7 @@
           class="svg-background"
           :icon-class="mainSlotSvgInner"
         />
-        <slot />
+        <slot/>
       </div>
     </div>
   </div>
@@ -878,16 +878,12 @@ export default {
     // 获取父元素大小
     getParentSize() {
       if (this.parent === true) {
-        try {
-          const style = window.getComputedStyle(this.$el.parentNode, null)
-          const rect = this.$el.parentNode.getBoundingClientRect()
-          this.parentX = rect.x
-          this.parentY = rect.y
-          // 高度不设置上限100000 宽度增加左右 60px
-          return [Math.round(parseFloat(style.getPropertyValue('width'), 10)) + 6, 100000]
-        } catch (e) {
-          console.warn('custom:getParentSize')
-        }
+        const style = window.getComputedStyle(this.$el.parentNode, null)
+        const rect = this.$el.parentNode.getBoundingClientRect()
+        this.parentX = rect.x
+        this.parentY = rect.y
+        // 高度不设置上限100000 宽度增加左右 60px
+        return [Math.round(parseFloat(style.getPropertyValue('width'), 10)) + 6, 100000]
       }
       if (typeof this.parent === 'string') {
         const parentNode = document.querySelector(this.parent)
@@ -2167,7 +2163,6 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
   width: 100% !important;
   height: 100% !important;
 }

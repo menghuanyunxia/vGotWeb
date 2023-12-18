@@ -143,14 +143,6 @@ export default {
 .form-item>>>.el-form-item__label{
   font-size: 12px;
 }
-
-.form-item ::v-deep .el-checkbox__label {
-  font-size: 12px;
-}
-.form-item ::v-deep .el-radio__label {
-  font-size: 12px;
-}
-
 .el-select-dropdown__item{
   padding: 0 20px;
 }

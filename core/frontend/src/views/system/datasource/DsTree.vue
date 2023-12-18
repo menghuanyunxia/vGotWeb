@@ -173,10 +173,7 @@
                         <i class="el-icon-edit" />
                         {{ $t('chart.edit') }}
                       </el-dropdown-item>
-                      <el-dropdown-item
-                        v-show="showView === 'Datasource'"
-                        command="copy"
-                      >
+                      <el-dropdown-item command="copy" v-show="showView === 'Datasource'">
                         <svg-icon
                           icon-class="de-copy"
                           class="de-copy-icon"
@@ -435,7 +432,7 @@ export default {
   },
   methods: {
     getDatasourceRelationship({ queryType, label, id }) {
-      return getDatasourceRelationship(id).then((res) => {
+     return getDatasourceRelationship(id).then((res) => {
         const arr = res.data || []
         this.treeData = []
         this.dfsTree(arr, { queryType, label })
@@ -716,7 +713,7 @@ export default {
       this.dialogTitle = this.$t('datasource.edit_driver')
       this.driverForm = { ...row }
     },
-    _handleCopy(row) {
+    _handleCopy(row){
       if (this.showView === 'Datasource') {
         const param = { ...row, ...{ showModel: 'copy' }}
         this.switchMain('DsForm', param, this.tData, this.dsTypes)

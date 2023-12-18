@@ -1,13 +1,10 @@
 <template>
   <div>
     <span>{{ someProp.title }}</span>
-    <br>
+    <br />
     <span class="use-html">{{ someProp.content }}</span>
-    <br>
-    <span
-      class="link-msg"
-      @click="change"
-    >{{ someProp.link }}</span>
+    <br />
+    <span @click="change" class="link-msg">{{ someProp.link }}</span>
   </div>
 </template>
 <script>
@@ -16,7 +13,7 @@ export default {
     someProp: {
       type: Object,
       default: () => {}
-    }
+    },
   },
   methods: {
     change() {

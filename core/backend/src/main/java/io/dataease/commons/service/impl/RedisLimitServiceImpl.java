@@ -1,6 +1,6 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
-import io.dataease.auth.service.DeLimitService;
+import io.dataease.commons.service.DeLimitService;
 import io.dataease.commons.condition.RedisStatusCondition;
 import io.dataease.commons.utils.LogUtil;
 import org.slf4j.Logger;

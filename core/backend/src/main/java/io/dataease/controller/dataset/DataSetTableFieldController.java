@@ -214,7 +214,7 @@ public class DataSetTableFieldController {
     public List<Object> multFieldValues(@RequestBody MultFieldValuesRequest multFieldValuesRequest) throws Exception {
         List<Object> results = new ArrayList<>();
         for (String fieldId : multFieldValuesRequest.getFieldIds()) {
-            List<Object> fieldValues = dataSetFieldService.fieldValues(fieldId, multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, false, multFieldValuesRequest.getKeyword());
+            List<Object> fieldValues = dataSetFieldService.fieldValues(fieldId, multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, false);
             if (CollectionUtil.isNotEmpty(fieldValues)) {
                 results.addAll(fieldValues);
             }
@@ -233,13 +233,13 @@ public class DataSetTableFieldController {
         DecodedJWT jwt = JWT.decode(linkToken);
         Long userId = jwt.getClaim("userId").asLong();
         multFieldValuesRequest.setUserId(userId);
-        return dataSetFieldService.fieldValues(multFieldValuesRequest.getFieldIds(), multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, true, false, multFieldValuesRequest.getKeyword());
+        return dataSetFieldService.fieldValues(multFieldValuesRequest.getFieldIds(), multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, true, false);
     }
 
     @ApiIgnore
     @PostMapping("mappingFieldValues")
     public List<Object> mappingFieldValues(@RequestBody MultFieldValuesRequest multFieldValuesRequest) throws Exception {
-        return dataSetFieldService.fieldValues(multFieldValuesRequest.getFieldIds(), multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, true, false, multFieldValuesRequest.getKeyword());
+        return dataSetFieldService.fieldValues(multFieldValuesRequest.getFieldIds(), multFieldValuesRequest.getSort(), multFieldValuesRequest.getUserId(), true, true, false);
     }
 
     @ApiIgnore

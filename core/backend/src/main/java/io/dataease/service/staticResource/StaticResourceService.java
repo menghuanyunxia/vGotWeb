@@ -60,15 +60,16 @@ public class StaticResourceService {
     }
 
     private boolean isImage(MultipartFile file) {
+        BufferedImage image = null;
         try (InputStream input = file.getInputStream()) {
-            ImageIO.read(input);
+            image = ImageIO.read(input);
         } catch (IOException e) {
             LogUtil.error(e.getMessage(), e);
             return false;
         }
-        Pattern pattern = Pattern.compile("\\.(png|jpg|jpeg|gif|svg)$");
+        Pattern pattern = Pattern.compile("\\.(png|jpg|jpeg|gif)$");
         Matcher matcher = pattern.matcher(file.getOriginalFilename().toLowerCase());
-        if (!matcher.find()) {
+        if (image == null || image.getWidth() <= 0 || image.getHeight() <= 0 || !matcher.find()) {
             return false;
         }
 

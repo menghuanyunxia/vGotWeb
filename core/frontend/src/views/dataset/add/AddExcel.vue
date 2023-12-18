@@ -8,7 +8,7 @@
       class="arrow-right"
       @click="showLeft = true"
     >
-      <i class="el-icon-d-arrow-right" />
+      <i class="el-icon-d-arrow-right"/>
     </p>
     <div
       v-show="showLeft"
@@ -21,16 +21,16 @@
             effect="dark"
             placement="right"
           >
-            <div slot="content">
-              {{ $t('dataset.excel_info_1') }}<br>
-              {{ $t('dataset.excel_info_2') }}<br>
-              {{ $t('dataset.excel_info_3') }}
-            </div>
-            <svg-icon icon-class="icon_info_outlined" /></el-tooltip></span>
-        <i
-          class="el-icon-d-arrow-left"
-          @click="showLeft = false"
-        />
+      <div slot="content">
+        {{ $t('dataset.excel_info_1') }}<br>
+        {{ $t('dataset.excel_info_2') }}<br>
+        {{ $t('dataset.excel_info_3') }}
+      </div>
+      <svg-icon icon-class="icon_info_outlined" /></el-tooltip></span>
+      <i
+        class="el-icon-d-arrow-left"
+        @click="showLeft = false"
+      />
       </p>
       <el-upload
         :action="baseUrl + 'dataset/table/excel/upload'"
@@ -68,9 +68,10 @@
           @node-click="handleNodeClick"
           @check-change="handleCheckChange"
         >
-          <span class="custom-tree-node"
-            slot-scope="{ node, data}"
+          <span
+            slot-scope="{ data }"
             :title="data.excelLabel"
+            class="custom-tree-node"
           >
             <span class="label">{{ data.excelLabel }}</span>
             <span
@@ -86,16 +87,6 @@
                 class="ds-icon-scene"
               />
             </span>
-            <span>
-              <el-button
-                v-show="!data.sheet"
-                type="text"
-                size="mini"
-                @click="() => remove(node, data)">
-              {{ $t('dataset.delete') }}
-           </el-button>
-            </span>
-
           </span>
         </el-tree>
       </div>
@@ -159,14 +150,14 @@
               min-width="200px"
               :field="field.fieldName"
               :title="field.remarks"
-              :field-type="field.fieldType"
+              :fieldType="field.fieldType"
               :resizable="true"
             >
               <template #header>
                 <el-dropdown
-                  :key="field.fieldName + field.fieldType"
                   placement="bottom-start"
                   trigger="click"
+                  :key="field.fieldName + field.fieldType"
                   @command="(type) => handleCommand(type, field)"
                 >
                   <span class="type-switch">
@@ -188,7 +179,7 @@
                       icon-class="field_value"
                       class="field-icon-value"
                     />
-                    <i class="el-icon-arrow-down el-icon--right" /></span>
+                    <i class="el-icon-arrow-down el-icon--right"/></span>
                   <el-dropdown-menu
                     slot="dropdown"
                     style="width: 178px"
@@ -246,9 +237,8 @@ import { $alert } from '@/utils/message'
 import store from '@/store'
 import msgCfm from '@/components/msgCfm/index'
 import cancelMix from './cancelMix'
-import Config from '@/settings'
+import Config from "@/settings";
 import { updateCacheTree } from '@/components/canvas/utils/utils'
-import { setToken } from '@/utils/auth'
 
 const token = getToken()
 const RefreshTokenKey = Config.RefreshTokenKey
@@ -326,7 +316,6 @@ export default {
   mounted() {
     window.addEventListener('resize', this.calHeight)
     this.calHeight()
-    this.$emit('setSaveDisabled', false)
   },
   created() {
     if (!this.param.tableId) {
@@ -474,12 +463,7 @@ export default {
         store.dispatch('user/refreshToken', refreshToken)
       }
     },
-    remove(node, data) {
-      const parent = node.parent;
-      const children = parent.data.children || parent.data;
-      const index = children.findIndex(d => d.id === data.id);
-      children.splice(index, 1);
-    },
+
     save() {
       var validate = true
       var selectedSheet = []

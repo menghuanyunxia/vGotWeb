@@ -7,7 +7,7 @@ import io.dataease.auth.annotation.DePermission;
 import io.dataease.auth.annotation.DePermissionProxy;
 import io.dataease.auth.annotation.DePermissions;
 import io.dataease.auth.filter.F2CLinkFilter;
-import io.dataease.auth.service.impl.ExtAuthServiceImpl;
+import io.dataease.commons.service.impl.ExtAuthServiceImpl;
 import io.dataease.commons.constants.DePermissionType;
 import io.dataease.commons.constants.PanelConstants;
 import io.dataease.commons.constants.ResourceAuthLevel;

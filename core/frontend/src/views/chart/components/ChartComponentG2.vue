@@ -15,7 +15,6 @@
       v-if="chart.type && antVRenderStatus"
       v-show="title_show"
       ref="title"
-      :class="titleIsRight"
       :style="title_class"
       style="cursor: default;display: block;"
     >
@@ -135,9 +134,6 @@ export default {
   computed: {
     trackBarStyleTime() {
       return this.trackBarStyle
-    },
-    titleIsRight() {
-      return this.title_class?.textAlign === 'right' && 'title-is-right'
     },
     bg_class() {
       return {
@@ -410,17 +406,6 @@ export default {
         group: this.pointParam.data.group
       }
 
-      if (this.chart.type === 'scatter' && this.chart.render === 'antv') {
-        const xAxis = JSON.parse(this.chart.xaxis)
-        if (xAxis && xAxis[0] && xAxis[0].groupType === 'q') {
-          linkageParam.scatterSpecial = true
-          linkageParam.scatterSpecialData = this.pointParam.data
-
-          jumpParam.scatterSpecial = true
-          jumpParam.scatterSpecialData = this.pointParam.data
-        }
-      }
-
       switch (trackAction) {
         case 'drill':
           this.$emit('onChartClick', this.pointParam)
@@ -490,14 +475,6 @@ export default {
 .g2-container {
   ::v-deep .g2-tooltip {
     position: fixed !important;
-  }
-}
-
-.fullscreen, .show-in-dialog {
-  .g2-container {
-    ::v-deep .g2-tooltip {
-      position: absolute !important;
-    }
   }
 }
 </style>

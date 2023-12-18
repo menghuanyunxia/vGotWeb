@@ -16,6 +16,4 @@ public class ChartViewFieldDTO extends ChartViewFieldBaseDTO implements Serializ
     private List<String> customSort;
 
     private String busiType;
-
-    private boolean drill;
 }

@@ -82,13 +82,12 @@ public class DataSetTableTaskService {
             }
             datasetTableTaskMapper.insert(datasetTableTask);
         } else {
-            datasetTableTask.setStatus(null);
+            datasetTableTask.setStatus(TaskStatus.Underway.name());
             datasetTableTask.setLastExecTime(null);
             datasetTableTask.setLastExecStatus(null);
             datasetTableTaskMapper.updateByPrimaryKeySelective(datasetTableTask);
         }
 
-        scheduleService.deleteSchedule(datasetTableTask);
         scheduleService.addSchedule(datasetTableTask);
 
         // simple

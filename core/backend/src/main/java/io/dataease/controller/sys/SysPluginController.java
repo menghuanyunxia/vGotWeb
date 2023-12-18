@@ -58,7 +58,7 @@ public class SysPluginController {
     @RequiresPermissions("plugin:upload")
     public Map<String, Object> update(@PathVariable("pluginId") Long pluginId, @RequestParam("file") MultipartFile file) throws Exception {
         DeFileUtils.validateFile(file);
-        if (pluginService.uninstallForUpdate(pluginId, true)) {
+        if (pluginService.uninstall(pluginId)) {
             return pluginService.localInstall(file);
         }
         return null;

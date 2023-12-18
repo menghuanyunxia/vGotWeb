@@ -11,7 +11,6 @@ public class PrestoConstants extends SQLConstants {
 
     public static final String KEYWORD_FIX = "%s." + "%s";
 
-    public static final String ALIAS_FIX = "%s";
     public static final String UNIX_TIMESTAMP = "to_unixtime(%s)";
 
     public static final String FROM_UNIXTIME = "from_unixtime(%s)";
@@ -40,7 +39,7 @@ public class PrestoConstants extends SQLConstants {
 
     public static final String BRACKETS = "(%s)";
 
-    public static final String NAME = "presto";
+    public static final String NAME = "pg";
 
 
 }

@@ -10,12 +10,8 @@
     <resultMap id="ExtBaseResultMap"  type="io.dataease.plugins.common.base.domain.SysMenu" extends="io.dataease.plugins.common.base.mapper.SysMenuMapper.BaseResultMap"></resultMap>
 
     <select id="allNodes" resultMap="simpleNode">
-        select menu_id as id, pid from sys_menu where hidden != 1
+        select menu_id as id, pid from sys_menu where hidden != 1 and name != 'dataset'
     </select>
-
-
-
-
 
     <select id="querySysMenu" resultMap="ExtBaseResultMap">
         SELECT
@@ -51,5 +47,40 @@
         ORDER BY
         menu_sort
     </select>
-
+    <select id="querySysMenuOnUser" resultMap="ExtBaseResultMap">
+        SELECT
+            *
+        FROM
+            sys_menu
+        WHERE
+            type &lt;= 1
+            AND name != 'dataSource'
+            And name != 'dataset'
+            AND (
+            sys_menu.menu_id != 100
+        OR EXISTS (
+        SELECT
+        1
+        FROM
+        system_parameter
+        WHERE
+        param_key = 'ui.openHomePage'
+        AND param_value = 'true'
+        )
+            )
+          AND (
+            sys_menu.menu_id != 202
+        OR EXISTS (
+        SELECT
+        1
+        FROM
+        system_parameter
+        WHERE
+        param_key = 'ui.openMarketPage'
+        AND param_value = 'true'
+        )
+            )
+        ORDER BY
+            menu_sort
+    </select>
 </mapper>

@@ -94,4 +94,4 @@ WHERE
         `menu_id` = 39;
 
 
-INSERT INTO `system_parameter` (`param_key`, `param_value`, `type`, `sort`) VALUES ('ui.openMarketPage', 'true', 'boolean', 14);
+INSERT INTO `system_parameter` (`param_key`, `param_value`, `type`, `sort`) VALUES ('ui.openMarketPage', 'false', 'boolean', 14);

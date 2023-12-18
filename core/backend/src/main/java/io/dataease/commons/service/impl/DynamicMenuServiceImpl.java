@@ -1,8 +1,10 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
+import cn.hutool.http.useragent.UserAgentUtil;
 import io.dataease.auth.api.dto.DynamicMenuDto;
 import io.dataease.auth.api.dto.MenuMeta;
-import io.dataease.auth.service.DynamicMenuService;
+import io.dataease.commons.service.DynamicMenuService;
+import io.dataease.commons.utils.AuthUtils;
 import io.dataease.plugins.common.base.domain.SysMenu;
 import io.dataease.plugins.common.base.mapper.SysMenuMapper;
 import io.dataease.ext.ExtPluginSysMenuMapper;
@@ -17,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +36,16 @@ public class DynamicMenuServiceImpl implements DynamicMenuService {
 
     @Override
     public List<DynamicMenuDto> load(String userId) {
-        List<SysMenu> sysMenus = extSysMenuMapper.querySysMenu();
+        Boolean isAdmin = AuthUtils.getUser().getIsAdmin();
+        List<SysMenu> sysMenus;
+        if (isAdmin){
+            sysMenus = extSysMenuMapper.querySysMenu();
+        }else
+        {
+            sysMenus = extSysMenuMapper.querySysMenuOnUser();
+        }
+
+
         List<DynamicMenuDto> dynamicMenuDtos = sysMenus.stream().map(this::convert).collect(Collectors.toList());
         //增加插件中的菜单
         List<PluginSysMenu> pluginSysMenus = PluginUtils.pluginMenus();

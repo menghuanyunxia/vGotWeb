@@ -41,11 +41,6 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html'
-    },
-    mobile: {
-      entry: 'src/mobile/main.js',
-      template: 'public/mobile.html',
-      filename: 'mobile.html'
     }
   },
   configureWebpack: {

@@ -1,8 +1,6 @@
 package io.dataease.provider.query.es;
 
 import com.alibaba.fastjson.JSONArray;
-import io.dataease.commons.exception.DEException;
-import io.dataease.i18n.Translator;
 import io.dataease.plugins.common.base.domain.ChartViewWithBLOBs;
 import io.dataease.plugins.common.base.domain.DatasetTableField;
 import io.dataease.plugins.common.base.domain.DatasetTableFieldExample;
@@ -122,11 +120,11 @@ public class EsQueryProvider extends QueryProvider {
 
     @Override
     public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree) {
-        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter, rowPermissionsTree, null, null, null);
+        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter, rowPermissionsTree, null);
     }
 
     @Override
-    public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields, Long limit, String keyword) {
+    public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields) {
         SQLObj tableObj = SQLObj.builder()
                 .tableName((table.startsWith("(") && table.endsWith(")")) ? table : String.format(EsSqlLConstants.KEYWORD_TABLE, table))
                 .tableAlias(String.format(TABLE_ALIAS_PREFIX, 0))
@@ -174,7 +172,6 @@ public class EsQueryProvider extends QueryProvider {
                     }
                 }
                 xFields.add(SQLObj.builder()
-                        .fieldOriginName(originField)
                         .fieldName(fieldName)
                         .fieldAlias(fieldAlias)
                         .build());
@@ -193,10 +190,6 @@ public class EsQueryProvider extends QueryProvider {
         List<String> wheres = new ArrayList<>();
         if (customWheres != null) wheres.add(customWheres);
         if (whereTrees != null) wheres.add(whereTrees);
-        if (StringUtils.isNotBlank(keyword)) {
-            String keyWhere = "("+transKeywordFilterList(tableObj, xFields, keyword)+")";
-            wheres.add(keyWhere);
-        }
         if (CollectionUtils.isNotEmpty(wheres)) st_sql.add("filters", wheres);
 
 
@@ -211,12 +204,6 @@ public class EsQueryProvider extends QueryProvider {
         }
         if (ObjectUtils.isNotEmpty(xOrders)) {
             st_sql.add("orders", xOrders);
-        }
-        if (ObjectUtils.isNotEmpty(limit)) {
-            ChartViewWithBLOBs view = new ChartViewWithBLOBs();
-            view.setResultMode("custom");
-            view.setResultCount(Integer.parseInt(limit.toString()));
-            return sqlLimit(st_sql.render(), view);
         }
 
         return st_sql.render();
@@ -266,8 +253,8 @@ public class EsQueryProvider extends QueryProvider {
     }
 
     @Override
-    public String createQuerySQLAsTmp(String sql, List<DatasetTableField> fields, boolean isGroup, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields, Long limit, String keyword) {
-        return createQuerySQL("(" + sqlFix(sql) + ")", fields, isGroup, null, fieldCustomFilter, rowPermissionsTree, sortFields, limit, keyword);
+    public String createQuerySQLAsTmp(String sql, List<DatasetTableField> fields, boolean isGroup, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields) {
+        return createQuerySQL("(" + sqlFix(sql) + ")", fields, isGroup, null, fieldCustomFilter, rowPermissionsTree, sortFields);
     }
 
     @Override
@@ -346,10 +333,8 @@ public class EsQueryProvider extends QueryProvider {
                 } else if (ObjectUtils.isNotEmpty(y.getExtField()) && y.getExtField() == DeTypeConstants.DE_TIME) {
                     originField = String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), y.getOriginName());
                 } else {
-                    if (y.getDeType() == 2) {
+                    if (y.getDeType() == 2 || y.getDeType() == 3) {
                         originField = String.format(EsSqlLConstants.CAST, String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), y.getOriginName()), "bigint");
-                    } else if (y.getDeType() == 3) {
-                        originField = String.format(EsSqlLConstants.CAST, String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), y.getOriginName()), "float");
                     } else {
                         originField = String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), y.getOriginName());
                     }
@@ -1324,54 +1309,27 @@ public class EsQueryProvider extends QueryProvider {
     }
 
     private String calcFieldRegex(String originField, SQLObj tableObj) {
-        try {
-            int i = 0;
-            return buildCalcField(originField, tableObj, i);
-        } catch (Exception e) {
-            DEException.throwException(Translator.get("i18n_field_circular_ref"));
+        originField = originField.replaceAll("[\\t\\n\\r]]", "");
+        // 正则提取[xxx]
+        String regex = "\\[(.*?)]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(originField);
+        Set<String> ids = new HashSet<>();
+        while (matcher.find()) {
+            String id = matcher.group(1);
+            ids.add(id);
         }
-        return null;
-    }
-
-    private String buildCalcField(String originField, SQLObj tableObj, int i) throws Exception {
-        try {
-            i++;
-            if (i > 100) {
-                DEException.throwException(Translator.get("i18n_field_circular_error"));
-            }
-            originField = originField.replaceAll("[\\t\\n\\r]]", "");
-            // 正则提取[xxx]
-            String regex = "\\[(.*?)]";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(originField);
-            Set<String> ids = new HashSet<>();
-            while (matcher.find()) {
-                String id = matcher.group(1);
-                ids.add(id);
-            }
-            if (CollectionUtils.isEmpty(ids)) {
-                return originField;
-            }
-            DatasetTableFieldExample datasetTableFieldExample = new DatasetTableFieldExample();
-            datasetTableFieldExample.createCriteria().andIdIn(new ArrayList<>(ids));
-            List<DatasetTableField> calcFields = datasetTableFieldMapper.selectByExample(datasetTableFieldExample);
-            for (DatasetTableField ele : calcFields) {
-                if (StringUtils.containsIgnoreCase(originField, ele.getId() + "")) {
-                    // 计算字段允许二次引用，这里递归查询完整引用链
-                    if (Objects.equals(ele.getExtField(), 0)) {
-                        originField = originField.replaceAll("\\[" + ele.getId() + "]",
-                                String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), ele.getOriginName()));
-                    } else {
-                        originField = originField.replaceAll("\\[" + ele.getId() + "]", ele.getOriginName());
-                        originField = buildCalcField(originField, tableObj, i);
-                    }
-                }
-            }
+        if (CollectionUtils.isEmpty(ids)) {
             return originField;
-        } catch (Exception e) {
-            DEException.throwException(Translator.get("i18n_field_circular_error"));
         }
-        return null;
+        DatasetTableFieldExample datasetTableFieldExample = new DatasetTableFieldExample();
+        datasetTableFieldExample.createCriteria().andIdIn(new ArrayList<>(ids));
+        List<DatasetTableField> calcFields = datasetTableFieldMapper.selectByExample(datasetTableFieldExample);
+        for (DatasetTableField ele : calcFields) {
+            originField = originField.replaceAll("\\[" + ele.getId() + "]",
+                    String.format(EsSqlLConstants.KEYWORD_FIX, tableObj.getTableAlias(), ele.getOriginName()));
+        }
+        return originField;
     }
 
     private String sqlLimit(String sql, ChartViewWithBLOBs view) {

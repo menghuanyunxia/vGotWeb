@@ -27,8 +27,9 @@ public class ConstantsUtil {
     }*/
 
     public static List<Class> getAllSQLConstants() {
-        if (CollectionUtils.isEmpty(SQLConstantsCache)) {
-            SQLConstantsCache.addAll(scanConstants(constsPackageName, SQLConstants.class));
+        if (CollectionUtils.isEmpty(SQLConstantsCache)){
+            Set<Class<? extends Class<?>>> classes = scanConstants(constsPackageName, SQLConstants.class);
+            SQLConstantsCache.addAll(classes);
         }
         return SQLConstantsCache;
     }
@@ -38,10 +39,9 @@ public class ConstantsUtil {
         if (Stream.of(mysqlTreaties).collect(Collectors.toList()).contains(dsType)) {
             dsType = "mysql";
         }
-
+        List<Class> allSQLConstantsClass = ConstantsUtil.getAllSQLConstants();
         Object result;
 
-        List<Class> allSQLConstantsClass = ConstantsUtil.getAllSQLConstants();
         for (int i = 0; i < allSQLConstantsClass.size(); i++) {
             Class classz = allSQLConstantsClass.get(i);
             Object fieldValue = ReflectUtil.getFieldValue(classz, ConstantsUtil.TYPE_KEY_FIELD);
@@ -50,27 +50,6 @@ public class ConstantsUtil {
                 return ObjectUtils.isNotEmpty(result) ? result.toString() : null;
             }
         }
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            for (ModuleClassLoader moduleClassLoader : ClassloaderResponsity.getInstance().getAllClassLoader()) {
-                Thread.currentThread().setContextClassLoader(moduleClassLoader);
-                for (Class<? extends Class<?>> scanConstant : scanConstants("io.dataease.plugins.datasource", SQLConstants.class)) {
-                    Object fieldValue = ReflectUtil.getFieldValue(scanConstant, ConstantsUtil.TYPE_KEY_FIELD);
-                    if (ObjectUtils.isNotEmpty(fieldValue) && StringUtils.equals(dsType, fieldValue.toString())) {
-                        result = ReflectUtil.getFieldValue(scanConstant, constantKey);
-                        return ObjectUtils.isNotEmpty(result) ? result.toString() : null;
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        } finally {
-            Thread.currentThread().setContextClassLoader(classLoader);
-        }
-
         return null;
     }
 

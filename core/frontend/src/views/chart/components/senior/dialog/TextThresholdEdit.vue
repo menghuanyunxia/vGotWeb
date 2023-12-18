@@ -34,7 +34,7 @@
           </el-select>
         </el-col>
         <el-col
-          :span="12"
+          :span="14"
           style="text-align: center;"
         >
           <el-input
@@ -72,20 +72,6 @@
         >
           <el-color-picker
             v-model="item.color"
-            :title="$t('chart.textColor')"
-            show-alpha
-            class="color-picker-style"
-            :predefine="predefineColors"
-            @change="changeThreshold"
-          />
-        </el-col>
-        <el-col
-          :span="2"
-          style="text-align: center;"
-        >
-          <el-color-picker
-            v-model="item.backgroundColor"
-            :title="$t('chart.backgroundColor')"
             show-alpha
             class="color-picker-style"
             :predefine="predefineColors"

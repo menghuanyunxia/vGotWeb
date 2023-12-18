@@ -1,6 +1,7 @@
-package io.dataease.plugins.common.util;
+package io.dataease.plugins.loader;
 
 import io.dataease.plugins.common.annotation.PluginResultMap;
+import io.dataease.plugins.config.SpringContextUtil;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeAliasRegistry;

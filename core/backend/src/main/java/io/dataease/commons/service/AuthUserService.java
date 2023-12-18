@@ -1,4 +1,4 @@
-package io.dataease.auth.service;
+package io.dataease.commons.service;
 
 import io.dataease.auth.api.dto.CurrentRoleDto;
 import io.dataease.auth.entity.AccountLockStatus;

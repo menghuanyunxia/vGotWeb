@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div
       v-show="contentShow"
       class="login-background"
@@ -651,6 +650,8 @@ export default {
   }
 
   .login-image {
+    margin-top: 0px;
+    margin-left: 0px;
     background: url(../../assets/login-desc.png) no-repeat;
     background-size: cover;
     width: 100%;

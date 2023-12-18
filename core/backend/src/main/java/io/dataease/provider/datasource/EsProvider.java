@@ -181,7 +181,7 @@ public class EsProvider extends Provider {
         }
 
         for (String[] row : esResponse.getRows()) {
-            if(!row[1].equalsIgnoreCase("STRUCT") && !row[2].equalsIgnoreCase("unsupported")){
+            if(!row[1].equalsIgnoreCase("STRUCT")){
                 TableField field = new TableField();
                 field.setFieldName(row[0]);
                 field.setRemarks(row[0]);

@@ -1,5 +1,5 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
-  <el-col style="padding: 1px 24px 16px 24px">
+  <el-col style="padding: 5px 24px 16px 24px">
     <el-col>
       <el-row style="margin-bottom: 10px">
         <el-col :span="24">
@@ -29,7 +29,16 @@
         </el-col>
       </el-row>
       <el-row class="de-tree">
-        <span class="header-title">{{ $t('panel.default_panel') }}</span>
+        <span
+          v-if="isAdmin()"
+          :class="'header-title'">{{ $t('panel.default_panel') }}
+          <el-button
+            style="float: right; padding-right: 7px; margin-top: -8px"
+            icon="el-icon-plus"
+            type="text"
+            @click="showEditPanel(newSystemFolder)"
+          />
+        </span>
         <div class="block">
           <el-tree
             ref="default_panel_tree"
@@ -45,7 +54,7 @@
               class="custom-tree-node father"
             >
               <span style="display: flex; flex: 1 1 0%; width: 0px">
-                <span>
+                <span v-if="data.nodeType === 'panel'">
                   <svg-icon
                     v-if="!data.mobileLayout"
                     :icon-class="'panel-' + data.status"
@@ -56,6 +65,9 @@
                     :icon-class="'panel-mobile-' + data.status"
                     class="ds-icon-scene"
                   />
+                </span>
+                <span v-if="data.nodeType === 'folder'">
+                  <svg-icon icon-class="scene"/>
                 </span>
                 <span
                   style="
@@ -74,6 +86,7 @@
                 @click.stop
               >
                 <el-button
+                  v-if="isAdmin()"
                   icon="el-icon-upload2"
                   type="text"
                   size="small"
@@ -85,8 +98,35 @@
                 class="child"
                 @click.stop
               >
+                <span
+                     v-if="data.nodeType === 'folder'"
+                     @click.stop
+                   >
+                  <el-dropdown
+                    trigger="click"
+                    size="small"
+                    @command="showEditPanel"
+                  >
+                    <span class="el-dropdown-link">
+                      <el-button
+                        v-if="isAdmin()"
+                        icon="el-icon-plus"
+                        type="text"
+                        size="small"
+                      />
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        :command="beforeClickEdit('folder', 'new','system', data, node)"
+                      >
+                        <svg-icon icon-class="scene"/>
+                        <span style="margin-left: 5px">{{ $t('panel.groupAdd') }}</span>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </span>
                 <el-dropdown
-                  v-if="hasDataPermission('manage', data.privileges)"
+                  v-if="isAdmin()&&hasDataPermission('manage', data.privileges)"
                   trigger="click"
                   size="small"
                   @command="clickMore"
@@ -100,16 +140,27 @@
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
+                            icon="el-icon-right"
+                            :command="beforeClickMore('move','system', data, node)"
+                          >
+                        {{ $t('dataset.move_to') }}
+                      </el-dropdown-item>
+                    <el-dropdown-item
                       icon="el-icon-edit-outline"
-                      :command="beforeClickMore('rename', data, node)"
+                      :command="beforeClickMore('rename','system', data, node)"
                     >
                       {{ $t('panel.rename') }}
                     </el-dropdown-item>
+                      <el-dropdown-item
+                        icon="el-icon-copy-document"
+                        @click.native="downloadToTemplate"
+                      >{{ $t('panel.export_to_panel') }}</el-dropdown-item>
                     <el-dropdown-item
                       icon="el-icon-delete"
-                      :command="beforeClickMore('delete', data, node)"
+                      :command="beforeClickMore('delete','system', data, node)"
                     >
-                      {{ $t('commons.cancel') + $t('emailtask.default') }}
+                      {{ $t('panel.delete') }}
+                      <!-- {{ $t('commons.cancel') + $t('emailtask.default') }} -->
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -117,7 +168,7 @@
             </span>
           </el-tree>
           <p
-            v-if="defaultData && defaultData.length > 3"
+            v-if="defaultData && defaultData.length > 10"
             class="default-expansion"
             @click="defaultExpansion = !defaultExpansion"
           >
@@ -131,18 +182,51 @@
         </div>
       </el-row>
 
-      <el-row>
+      <el-row v-if="isAdmin()">
         <span class="header-title">
           {{ $t('panel.panel_list') }}
-          <el-button
-            style="float: right; padding-right: 7px; margin-top: -8px"
-            icon="el-icon-plus"
-            type="text"
-            @click="showEditPanel(newFolder)"
-          />
+<!--          <el-button-->
+<!--            style="float: right; padding-right: 7px; margin-top: -8px"-->
+<!--            icon="el-icon-plus"-->
+<!--            type="text"-->
+<!--            @click="showEditPanel(newSelfFolder)"-->
+<!--          />-->
+             <el-dropdown
+               trigger="click"
+               size="small"
+               style="float: right; padding-right: 7px; margin-top: -8px"
+               @command="showEditPanel"
+             >
+                    <span class="el-dropdown-link">
+                      <el-button
+                        icon="el-icon-plus"
+                        type="text"
+                        size="small"
+                      />
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        :command="beforeClickEdit('folder', 'newFirstFolder','self', null, null)"
+                      >
+                        <svg-icon icon-class="scene"/>
+                        <span style="margin-left: 5px">{{ $t('panel.groupAdd') }}</span>
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        :command="beforeClickEdit('panel', 'new','self', null, null)"
+                      >
+                        <svg-icon
+                          icon-class="panel"
+                          class="ds-icon-scene"
+                        />
+                        <span>{{ $t('panel.panelAdd') }}</span>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
         </span>
       </el-row>
-      <el-col class="custom-tree-container de-tree">
+      <el-col
+        v-if="isAdmin()"
+        class="custom-tree-container de-tree">
         <div class="block">
           <el-tree
             ref="panel_list_tree"
@@ -209,13 +293,13 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
-                        :command="beforeClickEdit('folder', 'new', data, node)"
+                        :command="beforeClickEdit('folder', 'new','self', data, node)"
                       >
-                        <svg-icon icon-class="scene" />
+                        <svg-icon icon-class="scene"/>
                         <span style="margin-left: 5px">{{ $t('panel.groupAdd') }}</span>
                       </el-dropdown-item>
                       <el-dropdown-item
-                        :command="beforeClickEdit('panel', 'new', data, node)"
+                        :command="beforeClickEdit('panel', 'new','self', data, node)"
                       >
                         <svg-icon
                           icon-class="panel"
@@ -257,54 +341,53 @@
                       <el-dropdown-item
                         v-if="data.nodeType === 'panel'"
                         icon="el-icon-edit"
-                        :command="beforeClickMore('edit', data, node)"
+                        :command="beforeClickMore('edit','self', data, node)"
                       >
                         {{ $t('panel.edit') }}
                       </el-dropdown-item>
-                      <el-dropdown-item
+                      <!-- <el-dropdown-item
                         v-if="data.nodeType === 'panel'"
                         icon="el-icon-share"
                         :command="beforeClickMore('share', data, node)"
                       >
                         {{ $t('panel.share') }}
-                      </el-dropdown-item>
+                      </el-dropdown-item> -->
                       <el-dropdown-item
                         v-if="data.nodeType === 'panel'"
                         icon="el-icon-document-copy"
-                        :command="beforeClickMore('copy', data, node)"
+                        :command="beforeClickMore('copy','self', data, node)"
                       >
                         {{ $t('panel.copy') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         icon="el-icon-right"
-                        :command="beforeClickMore('move', data, node)"
+                        :command="beforeClickMore('move','self', data, node)"
                       >
                         {{ $t('dataset.move_to') }}
                       </el-dropdown-item>
-                      <el-dropdown-item
+                      <!-- <el-dropdown-item
                         v-if="data.nodeType === 'panel'"
                         icon="el-icon-paperclip"
                         :command="beforeClickMore('link', data, node)"
                       >
                         {{ $t('panel.create_public_links') }}
-                      </el-dropdown-item>
+                      </el-dropdown-item> -->
                       <el-dropdown-item
                         v-if="data.nodeType === 'panel'"
-                        :disabled="data.isDefault"
                         icon="el-icon-copy-document"
-                        :command="beforeClickMore('toDefaultPanel', data, node)"
+                        :command="beforeClickMore('toDefaultPanel','self', data, node)"
                       >
                         {{ $t('panel.to_default_panel') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         icon="el-icon-edit-outline"
-                        :command="beforeClickMore('rename', data, node)"
+                        :command="beforeClickMore('rename','self', data, node)"
                       >
                         {{ $t('panel.rename') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         icon="el-icon-delete"
-                        :command="beforeClickMore('delete', data, node)"
+                        :command="beforeClickMore('delete','self', data, node)"
                       >
                         {{ $t('panel.delete') }}
                       </el-dropdown-item>
@@ -334,7 +417,7 @@
             :label="$t('commons.name')"
             prop="name"
           >
-            <el-input v-model="groupForm.name" />
+            <el-input v-model="groupForm.name"/>
           </el-form-item>
         </el-form>
         <div
@@ -345,8 +428,8 @@
             size="mini"
             @click="close()"
           >{{
-            $t('panel.cancel')
-          }}
+              $t('panel.cancel')
+            }}
           </el-button>
           <el-button
             type="primary"
@@ -422,8 +505,8 @@
             size="mini"
             @click="closeMoveGroup()"
           >{{
-            $t('dataset.cancel')
-          }}
+              $t('dataset.cancel')
+            }}
           </el-button>
           <el-button
             :disabled="groupMoveConfirmDisabled"
@@ -451,6 +534,7 @@ import {
   groupTree,
   initPanelData, panelMove,
   panelToTop,
+  panelUpdate,
   viewPanelLog
 } from '@/api/panel/panel'
 import { mapState } from 'vuex'
@@ -459,6 +543,8 @@ import TreeSelector from '@/components/treeSelector'
 import { queryAuthModel } from '@/api/authModel/authModel'
 import msgCfm from '@/components/msgCfm/index'
 import { updateCacheTree } from '@/components/canvas/utils/utils'
+import html2canvas from 'html2canvasde'
+import FileSaver from 'file-saver'
 
 export default {
   name: 'PanelList',
@@ -504,7 +590,7 @@ export default {
           panelData: '[]'
         }
       },
-      newFolder: {
+      newSelfFolder: {
         type: 'folder',
         data: {
           id: null,
@@ -512,7 +598,19 @@ export default {
           level: 0
         },
         node: {},
-        optType: 'newFirstFolder'
+        optType: 'newFirstFolder',
+        panelType: 'self'
+      },
+      newSystemFolder: {
+        type: 'folder',
+        data: {
+          id: null,
+          pid: null,
+          level: 0
+        },
+        node: {},
+        optType: 'newFirstFolder',
+        panelType: 'system'
       },
       linkVisible: false,
       linkResourceId: null,
@@ -531,6 +629,14 @@ export default {
         name: null,
         pid: null,
         panelType: 'self',
+        nodeType: null,
+        children: [],
+        sort: 'create_time desc,node_type desc,name asc'
+      },
+      defaultForm: {
+        name: null,
+        pid: null,
+        panelType: 'system',
         nodeType: null,
         children: [],
         sort: 'create_time desc,node_type desc,name asc'
@@ -569,6 +675,7 @@ export default {
       groupMoveConfirmDisabled: true,
       moveDialogTitle: '',
       moveInfo: {},
+      panelType: 'self',
       tGroup: {},
       tGroupData: [], // 所有目录
       searchPids: [], // 查询命中的pid
@@ -586,8 +693,8 @@ export default {
       return this.editPanel.titlePre + this.editPanel.titleSuf
     },
     expandedData() {
-      return (!this.defaultExpansion && this.defaultData && this.defaultData.length > 3)
-        ? this.defaultData.slice(0, 3)
+      return (!this.defaultExpansion && this.defaultData && this.defaultData.length > 10)
+        ? this.defaultData.slice(0, 10)
         : this.defaultData
     },
     ...mapState(['nowPanelTrackInfo'])
@@ -669,7 +776,6 @@ export default {
         if (this.editPanel.optType === 'toDefaultPanel') {
           this.defaultTree(false)
         }
-
         updateCacheTree(this.editPanel.optType,
           panelInfo.panelType === 'system' ? 'panel-default-tree' : 'panel-main-tree', panelInfo,
           panelInfo.panelType === 'system' ? this.defaultData : this.tData)
@@ -679,7 +785,7 @@ export default {
         // 默认展开 同时点击 新增的节点
         if (
           panelInfo &&
-          panelInfo.panelType === 'self' &&
+          panelInfo.panelType === 'self' && this.lastActiveNodeData !== null &&
           this.lastActiveNodeData.id
         ) {
           if (this.editPanel.optType === 'rename') {
@@ -709,16 +815,29 @@ export default {
           } else {
             this.editPanel.panelInfo.name = this.$t('panel.panelAdd')
           }
-          this.editPanel.panelInfo.pid = param.data.id
-          this.editPanel.panelInfo.level = param.data.level + 1
-          this.editPanel.panelInfo.panelType = 'self'
+          if (param.data === null) {
+            if (param.panelType === 'system') {
+              this.editPanel.panelInfo.pid = 'default_panel'
+            } else {
+              this.editPanel.panelInfo.pid = 'panel_list'
+            }
+            this.editPanel.panelInfo.level = 0
+          } else {
+            this.editPanel.panelInfo.pid = param.data.id
+            this.editPanel.panelInfo.level = param.data.level + 1
+          }
+          this.editPanel.panelInfo.panelType = param.panelType
           break
         case 'newFirstFolder':
           this.editPanel.titlePre = this.$t('commons.create')
           this.editPanel.panelInfo.name = ''
-          this.editPanel.panelInfo.pid = 'panel_list'
+          if (param.panelType === 'system') {
+            this.editPanel.panelInfo.pid = 'default_panel'
+          } else {
+            this.editPanel.panelInfo.pid = 'panel_list'
+          }
           this.editPanel.panelInfo.level = 0
-          this.editPanel.panelInfo.panelType = 'self'
+          this.editPanel.panelInfo.panelType = param.panelType
           break
         case 'edit':
         case 'rename':
@@ -769,12 +888,13 @@ export default {
           break
       }
     },
-    beforeClickEdit(type, optType, data, node) {
+    beforeClickEdit(type, optType, panelType, data, node) {
       return {
         type: type,
         data: data,
         node: node,
-        optType: optType
+        optType: optType,
+        panelType: panelType
       }
     },
 
@@ -798,17 +918,18 @@ export default {
           this.link(param.data)
           break
         case 'move':
-          this.moveTo(param.data)
+          this.moveTo(param)
           break
       }
     },
 
-    beforeClickMore(optType, data, node) {
+    beforeClickMore(optType, panelType, data, node) {
       return {
         type: data.nodeType,
         data: data,
         node: node,
-        optType: optType
+        optType: optType,
+        panelType: panelType
       }
     },
 
@@ -949,7 +1070,7 @@ export default {
     },
 
     nodeClick(data, node) {
-      if (data.panelType === 'self') {
+      if (!this.isAdmin() || data.panelType === 'self') {
         this.$refs.default_panel_tree.setCurrentKey(null)
       } else {
         this.$refs.panel_list_tree.setCurrentKey(null)
@@ -1086,30 +1207,52 @@ export default {
         })
       }
     },
-    moveTo(data) {
+    moveTo(param) {
       const _this = this
-      this.moveInfo = data
+      const data = param.data
+      this.moveInfo = param.data
+      this.panelType = param.panelType
       this.moveDialogTitle =
         this.$t('dataset.m1') +
         (data.name.length > 10 ? data.name.substr(0, 10) + '...' : data.name) +
         this.$t('dataset.m2')
-      const queryInfo = JSON.parse(JSON.stringify(this.groupForm))
-      queryInfo['nodeType'] = 'folder'
-      groupTree(queryInfo).then((res) => {
-        if (data.nodeType === 'folder') {
-          _this.tGroupData = [
-            {
-              id: 'panel_list',
-              name: _this.$t('panel.panel_list'),
-              label: _this.$t('panel.panel_list'),
-              children: res.data || []
-            }
-          ]
-        } else {
-          _this.tGroupData = res.data || []
-        }
-        _this.moveGroup = true
-      })
+      if (param.panelType === 'system') {
+        const queryInfo = JSON.parse(JSON.stringify(this.defaultForm))
+        queryInfo['nodeType'] = 'folder'
+        defaultTree(queryInfo).then((res) => {
+          if (data.nodeType === 'folder') {
+            _this.tGroupData = [
+              {
+                id: 'default_panel',
+                name: _this.$t('panel.default_panel'),
+                label: _this.$t('panel.default_panel'),
+                children: res.data || []
+              }
+            ]
+          } else {
+            _this.tGroupData = res.data || []
+          }
+          _this.moveGroup = true
+        })
+      } else {
+        const queryInfo = JSON.parse(JSON.stringify(this.groupForm))
+        queryInfo['nodeType'] = 'folder'
+        groupTree(queryInfo).then((res) => {
+          if (data.nodeType === 'folder') {
+            _this.tGroupData = [
+              {
+                id: 'panel_list',
+                name: _this.$t('panel.panel_list'),
+                label: _this.$t('panel.panel_list'),
+                children: res.data || []
+              }
+            ]
+          } else {
+            _this.tGroupData = res.data || []
+          }
+          _this.moveGroup = true
+        })
+      }
     },
     closeMoveGroup() {
       this.moveGroup = false
@@ -1119,7 +1262,8 @@ export default {
       this.moveInfo.pid = this.tGroup.id
       this.moveInfo['optType'] = 'move'
       panelMove(this.moveInfo).then((response) => {
-        updateCacheTree('move', 'panel-main-tree', response.data, this.tData)
+        updateCacheTree('move', this.panelType === 'system' ? 'panel-default-tree' : 'panel-main-tree', response.data,
+          this.panelType === 'system' ? this.defaultData : this.tData)
         this.closeMoveGroup()
       })
     },
@@ -1157,6 +1301,37 @@ export default {
     editPanelBashInfo(params) {
       if (params.operation === 'status') {
         this.lastActiveNodeData.status = params.value
+      }
+    },
+    isAdmin() {
+      return this.$store.state.user.user.isAdmin
+    },
+    downloadToTemplate() {
+      const _this = this
+      _this.dataLoading = true
+      try {
+        _this.findStaticSource(function(staticResource) {
+          html2canvas(document.getElementById(_this.canvasInfoTemp)).then(canvas => {
+            _this.dataLoading = false
+            const snapshot = canvas.toDataURL('image/jpeg', 0.1) // 0.1是图片质量
+            if (snapshot !== '') {
+              _this.templateInfo = {
+                name: _this.$store.state.panel.panelInfo.name,
+                templateType: 'self',
+                snapshot: snapshot,
+                panelStyle: JSON.stringify(_this.canvasStyleData),
+                panelData: JSON.stringify(_this.componentData),
+                dynamicData: JSON.stringify(_this.panelViewDetailsInfo),
+                staticResource: JSON.stringify(staticResource || {})
+              }
+              const blob = new Blob([JSON.stringify(_this.templateInfo)], { type: '' })
+              FileSaver.saveAs(blob, _this.$store.state.panel.panelInfo.name + '-TEMPLATE.DET')
+            }
+          })
+        })
+      } catch (e) {
+        console.error(e)
+        _this.dataLoading = false
       }
     }
   }

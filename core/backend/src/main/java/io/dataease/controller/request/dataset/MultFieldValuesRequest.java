@@ -13,6 +13,4 @@ public class MultFieldValuesRequest {
 
     private DeSortDTO sort;
 
-    private String keyword;
-
 }

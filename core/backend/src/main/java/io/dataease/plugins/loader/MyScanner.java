@@ -1,5 +1,6 @@
-package io.dataease.plugins.common.util;
+package io.dataease.plugins.loader;
 
+import io.dataease.plugins.config.SpringContextUtil;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

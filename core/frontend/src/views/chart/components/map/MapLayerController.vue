@@ -1,7 +1,7 @@
 <template>
 
   <el-popover
-    placement="left"
+    placement="left-start"
     title=""
     width="150"
     :append-to-body="false"

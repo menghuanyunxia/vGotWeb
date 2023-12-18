@@ -2,7 +2,7 @@
   <div
     :style="getOutStyleDefault(config.style)"
     class="component component-outer"
-    :class="{'component-active': filterActive, 'user-view': config.component === 'user-view'}"
+    :class="{'component-active': filterActive}"
     @click="handleClick"
     @mousedown="elementMouseDown"
   >
@@ -40,7 +40,6 @@
         :style="getComponentStyleDefault(config.style)"
         style="overflow: hidden"
         :out-style="config.style"
-        :terminal="terminal"
         :is-relation="isRelation"
         :element="config"
         :in-screen="inScreen"
@@ -48,7 +47,6 @@
         :h="config.style.height"
         :search-count="searchCount"
         :canvas-id="canvasId"
-        @filter-loaded="filterLoaded"
       />
       <component
         :is="config.component"
@@ -165,7 +163,7 @@ export default {
     },
     chart() {
       if (this.config.propValue?.viewId) {
-        const viewInfo = this.panelViewDetailsInfo[this.config.propValue.viewId]
+        const viewInfo = this.panelViewDetailsInfo[ this.config.propValue.viewId]
         return viewInfo ? JSON.parse(viewInfo) : null
       }
       return null
@@ -236,9 +234,6 @@ export default {
     runAnimation(this.$el, this.config.animations)
   },
   methods: {
-    filterLoaded(p) {
-      this.$emit('filter-loaded', p)
-    },
     getComponentId() {
       return this.config.id
     },
@@ -387,19 +382,15 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
   width: 100% !important;
   height: 100% !important;
 }
 
-// .component-outer {
-//   transform: none;
-// }
+.component-outer {
+  transform: translate(0);
+}
 
 .component-active {
   z-index: 1;
-}
-.user-view {
-  transform: translate(0);
 }
 </style>

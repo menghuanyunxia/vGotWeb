@@ -1,7 +1,7 @@
 package io.dataease.auth.config;
 
 
-import io.dataease.auth.service.ShiroService;
+import io.dataease.commons.service.ShiroService;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;

@@ -4,7 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import io.dataease.auth.annotation.SqlInjectValidator;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.plugins.common.base.domain.SysMsgChannel;
 import io.dataease.plugins.common.base.domain.SysMsgSetting;
 import io.dataease.plugins.common.base.domain.SysMsgType;

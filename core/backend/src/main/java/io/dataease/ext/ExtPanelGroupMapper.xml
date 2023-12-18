@@ -211,8 +211,6 @@
         from panel_group
         where
         panel_group.id = #{pid}
-        or
-        panel_group.source = #{pid}
         <if test="nodeType == 'folder'">
             or FIND_IN_SET(panel_group.id, GET_PANEL_GROUP_WITH_CHILDREN(#{pid}))
         </if>

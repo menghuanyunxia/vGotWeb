@@ -11,7 +11,6 @@ public class MaxConstants extends SQLConstants {
 
     public static final String KEYWORD_FIX = "%s." + "%s";
 
-    public static final String ALIAS_FIX = "%s";
     public static final String UNIX_TIMESTAMP = "TO_MILLIS(%s)";
 
     public static final String DATE_FORMAT = "to_char(%s, '%s')";
@@ -40,7 +39,7 @@ public class MaxConstants extends SQLConstants {
 
     public static final String BRACKETS = "(%s)";
 
-    public static final String NAME = "maxcompute";
+    public static final String NAME = "pg";
 
 
 }

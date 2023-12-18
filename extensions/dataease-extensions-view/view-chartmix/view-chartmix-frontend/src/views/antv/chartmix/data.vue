@@ -5,31 +5,22 @@
       <span style="width: 80px;text-align: right;">
         <span>{{ $t('plugin_view_chartmix.source') }}</span>/<span>{{ $t('chart.dimension') }}</span>
       </span>
-      <draggable
-        v-model="view.xaxis"
-        :move="onMove"
-        animation="300"
-        class="drag-block-style"
-        group="drag"
-        @add="addXaxis"
-        @update="calcData(true)"
-      >
+      <draggable v-model="view.xaxis" group="drag" animation="300" :move="onMove" class="drag-block-style"
+                 @add="addXaxis" @update="calcData(true)">
         <transition-group class="draggable-group">
-          <dimension-item
-            v-for="(item,index) in view.xaxis"
-            :key="index"
-            :bus="bus"
-            :chart="chart"
-            :dimension-data="dimension"
-            :index="0"
-            :item="item"
-            :param="param"
-            :quota-data="quotaData"
-            dimension-name="dimension"
-            @editItemFilter="showDimensionEditFilter"
-            @onDimensionItemChange="dimensionItemChange"
-            @onDimensionItemRemove="dimensionItemRemove"
-            @onNameEdit="showRename"
+          <dimension-item v-for="(item,index) in view.xaxis" :key="index"
+                          :param="param"
+                          :index="0"
+                          :item="item"
+                          :dimension-data="dimension"
+                          :quota-data="quotaData"
+                          :chart="chart"
+                          @onDimensionItemChange="dimensionItemChange"
+                          @onDimensionItemRemove="dimensionItemRemove"
+                          @editItemFilter="showDimensionEditFilter"
+                          @onNameEdit="showRename"
+                          dimension-name="dimension"
+                          :bus="bus"
           />
         </transition-group>
       </draggable>
@@ -42,30 +33,17 @@
       <span style="width: 80px;text-align: right;">
         <span>{{ $t('plugin_view_chartmix.mark_size') }}</span>/<span>{{ $t('chart.quota') }}</span>
       </span>
-      <draggable
-        v-model="view.yaxis"
-        :move="onMove"
-        animation="300"
-        class="drag-block-style"
-        group="drag"
-        @add="addYaxis"
-        @update="calcData(true)"
-      >
+      <draggable v-model="view.yaxis" group="drag" animation="300" :move="onMove" class="drag-block-style"
+                 @add="addYaxis" @update="calcData(true)">
         <transition-group class="draggable-group">
-          <quota-item
-            v-for="(item,index) in view.yaxis"
-            :key="item.id"
-            :chart="chart"
-            :dimension-data="dimension"
-            :index="index"
-            :item="item" :param="param" :quota-data="quota"
-            @editItemCompare="showQuotaEditCompare"
-            @editItemFilter="showQuotaEditFilter"
-            @onNameEdit="showRename"
-            @onQuotaItemChange="quotaItemChange"
-            @onQuotaItemRemove="quotaItemRemove"
-            @valueFormatter="valueFormatter"
-          />
+          <quota-item v-for="(item,index) in view.yaxis" :key="item.id" :param="param" :index="index" :item="item"
+                      :chart="chart" :dimension-data="dimension" :quota-data="quota"
+                      @onQuotaItemChange="quotaItemChange"
+                      @onQuotaItemRemove="quotaItemRemove"
+                      @editItemFilter="showQuotaEditFilter"
+                      @valueFormatter="valueFormatter"
+                      @onNameEdit="showRename"
+                      @editItemCompare="showQuotaEditCompare"/>
         </transition-group>
       </draggable>
       <div v-if="!view.yaxis || view.yaxis.length === 0" class="drag-placeholder-style">
@@ -77,30 +55,18 @@
       <span style="width: 80px;text-align: right;">
         <span>{{ $t('plugin_view_chartmix.mark_size') }}</span>/<span>{{ $t('chart.quota') }}</span>
       </span>
-      <draggable
-        v-model="view.yaxisExt"
-        :move="onMove"
-        animation="300"
-        class="drag-block-style"
-        group="drag"
-        @add="addYaxisExt"
-        @update="calcData(true)"
-      >
+      <draggable v-model="view.yaxisExt" group="drag" animation="300" :move="onMove" class="drag-block-style"
+                 @add="addYaxisExt" @update="calcData(true)">
         <transition-group class="draggable-group">
-          <quota-ext-item
-            v-for="(item,index) in view.yaxisExt"
-            :key="item.id"
-            :chart="chart"
-            :dimension-data="dimension"
-            :index="index"
-            :item="item" :param="param" :quota-data="quota"
-            @editItemCompare="showQuotaEditCompare"
-            @editItemFilter="showQuotaEditFilter"
-            @onNameEdit="showRename"
-            @onQuotaItemChange="quotaExtItemChange"
-            @onQuotaItemRemove="quotaItemRemove"
-            @valueFormatter="valueFormatter"
-          />
+          <quota-ext-item v-for="(item,index) in view.yaxisExt" :key="item.id" :param="param" :index="index"
+                          :item="item"
+                          :chart="chart" :dimension-data="dimension" :quota-data="quota"
+                          @onQuotaItemChange="quotaItemChange"
+                          @onQuotaItemRemove="quotaItemRemove"
+                          @editItemFilter="showQuotaEditFilter"
+                          @valueFormatter="valueFormatter"
+                          @onNameEdit="showRename"
+                          @editItemCompare="showQuotaEditCompare"/>
         </transition-group>
       </draggable>
       <div v-if="!view.yaxisExt || view.yaxisExt.length === 0" class="drag-placeholder-style">
@@ -113,29 +79,14 @@
     <el-row class="padding-lr" style="margin-top: 6px;">
       <span>{{ $t('chart.result_filter') }}</span>
 
-      <draggable
-        v-model="view.customFilter"
-        :move="onMove"
-        animation="300"
-        class="theme-item-class"
-        group="drag"
-        style="padding:2px 0 0 0;width:100%;min-height: 32px;border-radius: 4px;border: 1px solid #DCDFE6;overflow-x: auto;display: flex;align-items: center;background-color: white;"
-        @add="addCustomFilter"
-        @update="calcData(true)"
-      >
+      <draggable v-model="view.customFilter" group="drag" animation="300" :move="onMove" class="theme-item-class"
+                 style="padding:2px 0 0 0;width:100%;min-height: 32px;border-radius: 4px;border: 1px solid #DCDFE6;overflow-x: auto;display: flex;align-items: center;background-color: white;"
+                 @add="addCustomFilter" @update="calcData(true)">
         <transition-group class="draggable-group">
-          <filter-item
-            v-for="(item,index) in view.customFilter"
-            :key="item.id"
-            :bus="bus"
-            :dimension-data="dimension"
-            :index="index"
-            :item="item"
-            :param="param"
-            :quota-data="quota"
-            @editItemFilter="showEditFilter"
-            @onFilterItemRemove="filterItemRemove"
-          />
+          <filter-item v-for="(item,index) in view.customFilter" :key="item.id" :param="param" :index="index"
+                       :item="item" :dimension-data="dimension" :quota-data="quota" :bus="bus"
+                       @onFilterItemRemove="filterItemRemove"
+                       @editItemFilter="showEditFilter"/>
         </transition-group>
       </draggable>
       <div v-if="!view.customFilter || view.customFilter.length === 0" class="drag-placeholder-style">
@@ -152,7 +103,6 @@ import QuotaItem from '../../../components/views/QuotaItem'
 import QuotaExtItem from '../../../components/views/QuotaExtItem'
 import FilterItem from '../../../components/views/FilterItem'
 import messages from '@/de-base/lang/messages'
-import {defaultTo} from "lodash-es"
 
 export default {
   props: {
@@ -165,7 +115,7 @@ export default {
       type: Object,
       required: false,
       default: null
-    }
+    },
   },
   components: {
     DimensionItem,
@@ -175,8 +125,6 @@ export default {
   },
   data() {
     return {
-      yChartType: undefined,
-      yExtChartType: undefined,
       widgets: [],
       places: [],
       moveId: -1,
@@ -190,7 +138,7 @@ export default {
           value: 'line',
           label: '线'
         }
-      ]
+      ],
     }
   },
   computed: {
@@ -216,37 +164,20 @@ export default {
       return this.obj.quotaData
     },
     listenLists() {
-      if (!this.view) return [0, 0]
+      if (!this.view) return [0, 0];
       return [
         this.view.yaxis ? this.view.yaxis.length : 0,
         this.view.yaxisExt ? this.view.yaxisExt.length : 0
       ]
-    },
-    selectedDimension() {
-      return this.obj.selectedDimension
-    },
-    selectedQuota() {
-      return this.obj.selectedQuota
     }
   },
   created() {
     this.$emit('on-add-languages', messages)
   },
-  mounted() {
-    if (this.view.yaxis && this.view.yaxis[0]) {
-      this.yChartType = this.view.yaxis[0].chartType
-    }
-    if (this.view.yaxisExt && this.view.yaxisExt[0]) {
-      this.yExtChartType = this.view.yaxisExt[0].chartType
-    }
-    this.yChartType = defaultTo(this.yChartType, 'bar');
-    this.yExtChartType = defaultTo(this.yExtChartType, 'line');
-
-  },
   watch: {
-    /*listenLists: function(val) {
+    listenLists: function (val) {
       if (this.listenLists[0] <= 1 && this.listenLists[1] <= 1) {
-        return
+        return;
       }
       if (this.view.yaxis.length > 1) {
         this.dragCheckType(this.view.yaxis, 'q')
@@ -257,7 +188,7 @@ export default {
         this.view.yaxisExt = [this.view.yaxisExt[0]]
       }
       this.calcData(true)
-    }*/
+    },
   },
   methods: {
     executeAxios(url, type, data, callBack) {
@@ -281,46 +212,44 @@ export default {
       }
     },
 
+
     onMove(e, originalEvent) {
       this.moveId = e.draggedContext.element.id
       return true
     },
 
     addXaxis(e) {
-      this.multiAdd(e, this.view.xaxis)
-      this.dragMoveDuplicate(this.view.xaxis, e)
       if (this.view.type !== 'table-info') {
         this.dragCheckType(this.view.xaxis, 'd')
       }
+      this.dragMoveDuplicate(this.view.xaxis, e)
+      /*if (this.view.xaxis.length > 1) {
+        this.view.xaxis = [this.view.xaxis[0]]
+      }*/
       this.calcData(true)
     },
     addYaxis(e) {
-      this.multiAdd(e, this.view.yaxis)
-      this.dragMoveDuplicate(this.view.yaxis, e)
       this.dragCheckType(this.view.yaxis, 'q')
-
-      for (let i = 0; i < this.view.yaxis.length; i++) {
-        this.view.yaxis[i].chartType = this.yChartType
+      this.dragMoveDuplicate(this.view.yaxis, e)
+      /*if ( this.view.yaxis.length > 1) {
+        this.view.yaxis = [this.view.yaxis[0]]
+      }*/
+      if (this.view.yaxis.length <= 1) {
+        this.calcData(true)
       }
-
-      //if (this.view.yaxis.length <= 1) {
-      this.calcData(true)
-      //}
     },
     addYaxisExt(e) {
-      this.multiAdd(e, this.view.yaxisExt)
-      this.dragMoveDuplicate(this.view.yaxisExt, e)
       this.dragCheckType(this.view.yaxisExt, 'q')
-
-      for (let i = 0; i < this.view.yaxisExt.length; i++) {
-        this.view.yaxisExt[i].chartType = this.yExtChartType;
+      this.dragMoveDuplicate(this.view.yaxisExt, e)
+      /*if (equalsAny(this.view.type, 'map', 'bidirectional-bar') && this.view.yaxisExt.length > 1) {
+        this.view.yaxisExt = [this.view.yaxisExt[0]]
+      }*/
+      if (this.view.yaxisExt.length <= 1) {
+        this.calcData(true)
       }
-
-      //if (this.view.yaxisExt.length <= 1) {
-      this.calcData(true)
-      //}
     },
     calcData(cache) {
+      console.log(cache)
       //this.view.xaxis = [...this.source, ...this.target]
 
       this.$emit('plugin-call-back', {
@@ -332,6 +261,7 @@ export default {
     },
 
     showDimensionEditFilter(item) {
+
       this.$emit('plugin-call-back', {
         eventName: 'show-dimension-edit-filter',
         eventParam: item
@@ -349,12 +279,14 @@ export default {
       this.calcData(true)
     },
     showRename(item) {
+
       this.$emit('plugin-call-back', {
         eventName: 'show-rename',
         eventParam: item
       })
     },
     valueFormatter(item) {
+
       this.$emit('plugin-call-back', {
         eventName: 'show-edit-formatter',
         eventParam: item
@@ -362,17 +294,6 @@ export default {
     },
 
     quotaItemChange(item) {
-      this.yChartType = item.chartType;
-      for (let i = 0; i < this.view.yaxis.length; i++) {
-        this.view.yaxis[i].chartType = this.yChartType
-      }
-      this.calcData(true)
-    },
-    quotaExtItemChange(item) {
-      this.yExtChartType = item.chartType;
-      for (let i = 0; i < this.view.yaxisExt.length; i++) {
-        this.view.yaxisExt[i].chartType = this.yExtChartType
-      }
       this.calcData(true)
     },
     quotaItemRemove(item) {
@@ -384,12 +305,14 @@ export default {
       this.calcData(true)
     },
     showQuotaEditFilter(item) {
+
       this.$emit('plugin-call-back', {
         eventName: 'show-quota-edit-filter',
         eventParam: item
       })
     },
     showQuotaEditCompare(item) {
+
       this.$emit('plugin-call-back', {
         eventName: 'show-quota-edit-compare',
         eventParam: item
@@ -397,46 +320,23 @@ export default {
     },
     dragCheckType(list, type) {
       if (list && list.length > 0) {
-        for (let i = list.length - 1; i >= 0; i--) {
+        for (let i = 0; i < list.length; i++) {
           if (list[i].groupType !== type) {
             list.splice(i, 1)
           }
         }
       }
     },
-    multiAdd(e, itemList) {
-      // 只处理原始字段拖拽
-      if (!e.item.classList.contains('selected-item')) {
-        return
-      }
-      const groupDie = e.item.classList.contains('group-dimension')
-      const sourceList = groupDie ? this.selectedDimension : this.selectedQuota
-      if (sourceList.length > 1) {
-        const qdList = groupDie ? this.dimensionData : this.quotaData
-        const sourceIds = sourceList.map(i => i.id)
-        const sortedList = qdList.filter(i => sourceIds.includes(i.id))
-        itemList.splice(e.newIndex, 1, ...sortedList)
-      }
-    },
     dragMoveDuplicate(list, e) {
-      let newItems = [list[e.newDraggableIndex]]
-      if (e.item.classList.contains('selected-item')) {
-        const groupDie = e.item.classList.contains('group-dimension')
-        newItems = groupDie ? this.selectedDimension : this.selectedQuota
-      }
-      const preIds = list
-        .filter((_, i) => i < e.newDraggableIndex || i >= e.newDraggableIndex + newItems.length)
-        .map(i => i.id)
-      // 倒序删除
-      for (let i = e.newDraggableIndex + newItems.length - 1; i >= e.newDraggableIndex; i--) {
-        if (preIds.includes(list[i].id)) {
-          list.splice(i, 1)
-        }
+      const that = this
+      const dup = list.filter(function (m) {
+        return m.id === that.moveId
+      })
+      if (dup && dup.length > 1) {
+        list.splice(e.newDraggableIndex, 1)
       }
     },
     addCustomFilter(e) {
-      this.multiAdd(e, this.view.customFilter)
-      this.dragMoveDuplicate(this.view.customFilter, e)
       // 记录数等自动生成字段不做为过滤条件
       if (this.view.customFilter && this.view.customFilter.length > 0) {
         for (let i = 0; i < this.view.customFilter.length; i++) {
@@ -445,6 +345,7 @@ export default {
           }
         }
       }
+      this.dragMoveDuplicate(this.view.customFilter, e)
       this.calcData(true)
     },
     filterItemRemove(item) {

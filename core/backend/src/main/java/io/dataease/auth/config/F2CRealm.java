@@ -7,7 +7,7 @@ import io.dataease.auth.entity.JWTToken;
 import io.dataease.auth.entity.SysUserEntity;
 import io.dataease.auth.entity.TokenInfo;
 import io.dataease.auth.handler.ApiKeyHandler;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.auth.util.JWTUtils;
 import io.dataease.commons.utils.BeanUtils;
 import io.dataease.commons.utils.LogUtil;

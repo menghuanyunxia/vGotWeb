@@ -218,6 +218,7 @@ export default {
         this.$warning(this.$t('chart.template_can_not_empty'))
         return false
       }
+
       this.editPanel.panelInfo['newFrom'] = this.inputType
       this.loading = true
       if (this.editPanel.optType === 'new' || this.editPanel.optType === 'newFirstFolder') {

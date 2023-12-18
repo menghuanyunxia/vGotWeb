@@ -81,11 +81,11 @@ public class MaxcomputeQueryProvider extends QueryProvider {
 
     @Override
     public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree) {
-        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter, rowPermissionsTree, null, null, null);
+        return createQuerySQL(table, fields, isGroup, ds, fieldCustomFilter, rowPermissionsTree, null);
     }
 
     @Override
-    public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields, Long limit, String keyword) {
+    public String createQuerySQL(String table, List<DatasetTableField> fields, boolean isGroup, Datasource ds, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields) {
         SQLObj tableObj = SQLObj.builder()
                 .tableName((table.startsWith("(") && table.endsWith(")")) ? table : String.format(MaxConstants.KEYWORD_TABLE, table))
                 .tableAlias(String.format(TABLE_ALIAS_PREFIX, 0))
@@ -135,7 +135,6 @@ public class MaxcomputeQueryProvider extends QueryProvider {
                     }
                 }
                 xFields.add(SQLObj.builder()
-                        .fieldOriginName(originField)
                         .fieldName(fieldName)
                         .fieldAlias(fieldAlias)
                         .build());
@@ -153,10 +152,6 @@ public class MaxcomputeQueryProvider extends QueryProvider {
         List<String> wheres = new ArrayList<>();
         if (customWheres != null) wheres.add(customWheres);
         if (whereTrees != null) wheres.add(whereTrees);
-        if (StringUtils.isNotBlank(keyword)) {
-            String keyWhere = "("+transKeywordFilterList(tableObj, xFields, keyword)+")";
-            wheres.add(keyWhere);
-        }
         if (CollectionUtils.isNotEmpty(wheres)) st_sql.add("filters", wheres);
 
         List<SQLObj> xOrders = new ArrayList<>();
@@ -171,16 +166,10 @@ public class MaxcomputeQueryProvider extends QueryProvider {
         if (ObjectUtils.isNotEmpty(xOrders)) {
             st_sql.add("orders", xOrders);
             String sql = st_sql.render();
-            if (ObjectUtils.isEmpty(limit) && !StringUtils.containsIgnoreCase(sql, "LIMIT") && !StringUtils.containsIgnoreCase(sql, "offset")) {
+            if (!StringUtils.containsIgnoreCase(sql, "LIMIT") && !StringUtils.containsIgnoreCase(sql, "offset")) {
                 sql += "LIMIT 1000000 offset 0";
-                return sql;
             }
-        }
-        if (ObjectUtils.isNotEmpty(limit)) {
-            ChartViewWithBLOBs view = new ChartViewWithBLOBs();
-            view.setResultMode("custom");
-            view.setResultCount(Integer.parseInt(limit.toString()));
-            return sqlLimit(st_sql.render(), view);
+            return sql;
         }
         return st_sql.render();
     }
@@ -229,8 +218,8 @@ public class MaxcomputeQueryProvider extends QueryProvider {
     }
 
     @Override
-    public String createQuerySQLAsTmp(String sql, List<DatasetTableField> fields, boolean isGroup, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields, Long limit, String keyword) {
-        return createQuerySQL("(" + sqlFix(sql) + ")", fields, isGroup, null, fieldCustomFilter, rowPermissionsTree, sortFields, limit, keyword);
+    public String createQuerySQLAsTmp(String sql, List<DatasetTableField> fields, boolean isGroup, List<ChartFieldCustomFilterDTO> fieldCustomFilter, List<DataSetRowPermissionsTreeDTO> rowPermissionsTree, List<DeSortField> sortFields) {
+        return createQuerySQL("(" + sqlFix(sql) + ")", fields, isGroup, null, fieldCustomFilter, rowPermissionsTree, sortFields);
     }
 
     @Override

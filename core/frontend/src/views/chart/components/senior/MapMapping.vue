@@ -227,9 +227,7 @@ export default {
         }
 
         features.forEach(feature => {
-          if (feature.properties.name || feature.properties.NAME) {
-            this.mappingForm[cCode][feature.properties.name || feature.properties.NAME] = null
-          }
+          this.mappingForm[cCode][feature.properties.name || feature.properties.NAME] = null
         })
       }
       const cCode = this.currentAreaCode

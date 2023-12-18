@@ -7,7 +7,6 @@
         :model="thresholdForm"
         label-width="80px"
         size="mini"
-        @submit.native.prevent
       >
         <el-form-item
           :label="$t('chart.threshold_range')+'(%)'"
@@ -47,7 +46,6 @@
         :model="thresholdForm"
         label-width="80px"
         size="mini"
-        @submit.native.prevent
       >
         <el-form-item
           :label="$t('chart.threshold_range')+'(%)'"
@@ -196,17 +194,8 @@
                 {{ item.min }}&nbsp;≤{{ $t('chart.drag_block_label_value') }}≤&nbsp;{{ item.max }}
               </span>
             </el-col>
-            <el-col
-              :span="3"
-              :title="$t('chart.textColor')"
-            >
+            <el-col :span="6">
               <span :style="{width:'14px', height:'14px', backgroundColor: item.color, border: 'solid 1px #e1e4e8'}" />
-            </el-col>
-            <el-col
-              :span="3"
-              :title="$t('chart.backgroundColor')"
-            >
-              <span :style="{width:'14px', height:'14px', backgroundColor: item.backgroundColor, border: 'solid 1px #e1e4e8'}" />
             </el-col>
           </el-row>
         </el-col>
@@ -317,30 +306,21 @@
                 >{{ $t('chart.filter_not_empty') }}</span>
               </el-col>
 
-              <el-col
-                v-if="!item.term.includes('null') && !item.term.includes('empty')"
-                :span="4"
-              >
-                <span
-                  v-if="item.field === '0'"
-                  :title="$t('chart.field_fixed')"
-                >{{ $t('chart.field_fixed') }}</span>
-                <span
-                  v-if="item.field === '1'"
-                  :title="$t('chart.field_dynamic')"
-                >{{ $t('chart.field_dynamic') }}</span>
+              <el-col :span="4" v-if="!item.term.includes('null') && !item.term.includes('empty')">
+                  <span
+                          v-if="item.field === '0'"
+                          :title="$t('chart.field_fixed')"
+                  >{{ $t('chart.field_fixed') }}</span>
+                  <span
+                          v-if="item.field === '1'"
+                          :title="$t('chart.field_dynamic')"
+                  >{{ $t('chart.field_dynamic') }}</span>
               </el-col>
-              <el-col
-                v-if="item.term.includes('null') || item.term.includes('empty')"
-                :span="4"
-              >
+              <el-col :span="4" v-if="item.term.includes('null') || item.term.includes('empty')">
                   &nbsp;
               </el-col>
 
-              <el-col
-                v-if="item.field === '0'"
-                :span="10"
-              >
+              <el-col :span="10" v-if="item.field === '0'">
                 <span
                   v-if="!item.term.includes('null') && !item.term.includes('empty') && item.term !== 'between'"
                   :title="item.value"
@@ -351,20 +331,14 @@
                 <span v-else>&nbsp;</span>
               </el-col>
 
-              <el-col
-                v-if="item.field === '1'"
-                :span="10"
-              >
-                <span
-                  v-if="!item.term.includes('null') && !item.term.includes('empty') && item.term !== 'between'"
-                  :title="item.targetField.curField.name + '(' + $t('chart.' + item.targetField.summary) + ')'"
-                >{{ item.targetField.curField.name + '(' + $t('chart.' + item.targetField.summary) + ')' }}</span>
+              <el-col :span="10" v-if="item.field === '1'">
+                <span v-if="!item.term.includes('null') && !item.term.includes('empty') && item.term !== 'between'"
+                      :title="item.targetField.curField.name + '(' + $t('chart.' + item.targetField.summary) + ')'">{{ item.targetField.curField.name + '(' + $t('chart.' + item.targetField.summary) + ')' }}</span>
 
-                <span
-                  v-else-if="!item.term.includes('null') && !item.term.includes('empty') && item.term === 'between'"
-                  :title="item.minField.curField.name + '(' + $t('chart.' + item.minField.summary) + ')' + ' ≤' + $t('chart.drag_block_label_value') + '≤ ' + item.maxField.curField.name + '(' + $t('chart.' + item.maxField.summary) + ')'"
-                >
-                  {{ item.minField.curField.name + '(' + $t('chart.' + item.minField.summary) + ')' + ' ≤' + $t('chart.drag_block_label_value') + '≤ ' + item.maxField.curField.name + '(' + $t('chart.' + item.maxField.summary) + ')' }}
+
+                <span v-else-if="!item.term.includes('null') && !item.term.includes('empty') && item.term === 'between'"
+                      :title="item.minField.curField.name + '(' + $t('chart.' + item.minField.summary) + ')' + ' ≤' + $t('chart.drag_block_label_value') + '≤ ' + item.maxField.curField.name + '(' + $t('chart.' + item.maxField.summary) + ')'">
+                    {{ item.minField.curField.name + '(' + $t('chart.' + item.minField.summary) + ')' + ' ≤' + $t('chart.drag_block_label_value') + '≤ ' + item.maxField.curField.name + '(' + $t('chart.' + item.maxField.summary) + ')' }}
                 </span>
 
                 <span v-else>&nbsp;</span>
@@ -689,7 +663,7 @@ export default {
     },
     fieldValid(field) {
       // 检查字段和聚合方式是否不为空
-      return field && field.fieldId && field.summary
+      return field && field.fieldId && field.summary;
     },
     changeTableThreshold() {
       // check line config

@@ -465,14 +465,6 @@ export default {
   font-size: 12px;
   line-height: 38px;
 }
-
-.form-item ::v-deep .el-checkbox__label {
-  font-size: 12px;
-}
-.form-item ::v-deep .el-radio__label {
-  font-size: 12px;
-}
-
 .form-item ::v-deep .el-form-item__label{
   font-size: 12px;
 }

@@ -79,20 +79,21 @@ public class DePermissionAnnotationHandler {
 
     @Around(value = "@annotation(io.dataease.auth.annotation.DePermission)")
     public Object PermissionAround(ProceedingJoinPoint point) throws Throwable {
-        Boolean access = false;
-
-        if (AuthUtils.getUser().getIsAdmin()) {
-            return point.proceed(point.getArgs());
-        }
-        MethodSignature ms = (MethodSignature) point.getSignature();
-        Method method = ms.getMethod();
-        DePermission annotation = method.getAnnotation(DePermission.class);
-        Object arg = point.getArgs()[annotation.paramIndex()];
-        if (access(arg, annotation, 0)) {
-            access = true;
-        }
-
-        return access ? point.proceed(point.getArgs()) : null;
+        return point.proceed(point.getArgs());
+//        Boolean access = false;
+//
+//        if (AuthUtils.getUser().getIsAdmin()) {
+//            return point.proceed(point.getArgs());
+//        }
+//        MethodSignature ms = (MethodSignature) point.getSignature();
+//        Method method = ms.getMethod();
+//        DePermission annotation = method.getAnnotation(DePermission.class);
+//        Object arg = point.getArgs()[annotation.paramIndex()];
+//        if (access(arg, annotation, 0)) {
+//            access = true;
+//        }
+//
+//        return access ? point.proceed(point.getArgs()) : null;
     }
 
     private Boolean access(Object arg, DePermission annotation, int layer) throws Exception {

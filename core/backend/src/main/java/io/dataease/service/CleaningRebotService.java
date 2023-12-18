@@ -1,7 +1,6 @@
 package io.dataease.service;
 
 import io.dataease.ext.CleaningRebotMapper;
-import io.dataease.service.dataset.DataSetTableTaskLogService;
 import io.dataease.service.message.SysMsgService;
 import io.dataease.service.sys.log.LogService;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +23,6 @@ public class CleaningRebotService {
 
     @Resource
     private SysMsgService sysMsgService;
-    @Resource
-    private DataSetTableTaskLogService dataSetTableTaskLogService;
 
     public void execute() {
         int floatDept = 0;
@@ -46,6 +43,5 @@ public class CleaningRebotService {
         }
         logService.cleanDisusedLog();
         sysMsgService.cleanDisusedMsg();
-        dataSetTableTaskLogService.cleanLog();
     }
 }

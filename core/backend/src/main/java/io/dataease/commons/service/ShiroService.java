@@ -1,4 +1,4 @@
-package io.dataease.auth.service;
+package io.dataease.commons.service;
 
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 

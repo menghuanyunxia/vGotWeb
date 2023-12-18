@@ -18,7 +18,7 @@
       @mousedown="handleMousedown"
       @blur="handleBlur"
       @input="handleInput"
-      v-html="element.propValue"
+      v-html="$xss(element.propValue)"
     />
     <div
       v-if="!canEdit"
@@ -28,7 +28,7 @@
       @mousedown="handleMousedown"
       @blur="handleBlur"
       @input="handleInput"
-      v-html="element.propValue"
+      v-html="$xss(element.propValue)"
     />
   </div>
   <div
@@ -37,7 +37,7 @@
   >
     <div
       :style="{ verticalAlign: element.style.verticalAlign }"
-      v-html="textInfo"
+      v-html="$xss(textInfo)"
     />
   </div>
 </template>
@@ -45,7 +45,6 @@
 <script>
 import { keycodes } from '@/components/canvas/utils/shortcutKey.js'
 import { mapState } from 'vuex'
-import xssCheck from 'xss'
 
 export default {
   props: {
@@ -140,12 +139,16 @@ export default {
     },
 
     handleBlur(e) {
-      this.element.propValue = xssCheck(e.target.innerHTML || '&nbsp;')
+      this.element.propValue = e.target.innerHTML || '&nbsp;'
       this.canEdit = false
     },
 
     setEdit() {
       this.canEdit = true
+      this.selectText(this.$refs.text)
+    },
+
+    selectText(element) {
     },
 
     removeSelectText() {

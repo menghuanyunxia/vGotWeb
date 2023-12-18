@@ -1,9 +1,9 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
 import io.dataease.auth.api.dto.CurrentRoleDto;
 import io.dataease.auth.entity.AccountLockStatus;
 import io.dataease.auth.entity.SysUserEntity;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.commons.constants.AuthConstants;
 import io.dataease.commons.constants.ParamConstants;
 import io.dataease.commons.utils.CodingUtil;
@@ -17,7 +17,7 @@ import io.dataease.plugins.common.base.domain.SysUser;
 import io.dataease.plugins.common.base.mapper.SysLoginLimitMapper;
 import io.dataease.plugins.common.base.mapper.SysUserMapper;
 import io.dataease.plugins.common.service.PluginCommonService;
-import io.dataease.plugins.common.util.SpringContextUtil;
+import io.dataease.plugins.config.SpringContextUtil;
 import io.dataease.plugins.util.PluginUtils;
 import io.dataease.plugins.xpack.cas.service.CasXpackService;
 import io.dataease.plugins.xpack.dingtalk.service.DingtalkXpackService;

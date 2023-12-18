@@ -43,6 +43,7 @@ export default {
     },
     withLink(options, confirmButtonTextInfo) {
       const h = this.$createElement
+      const that = this
       const { title, content, type = 'danger', cb, confirmButtonText = confirmButtonTextInfo || this.$t('commons.delete'), showCancelButton = true, cancelButtonText = this.$t('commons.cancel'), cancelCb = () => {}, finallyCb = () => {}, link = '', templateDel, linkTo } = options
       const customClass = `de-confirm de-confirm-fail de-use-html`
       const confirmButtonClass = `de-confirm-${type}-btn de-confirm-btn`

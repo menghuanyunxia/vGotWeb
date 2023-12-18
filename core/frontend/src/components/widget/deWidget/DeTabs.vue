@@ -8,13 +8,11 @@
       class="frame-mask edit-mask"
     />
     <dataease-tabs
-      ref="deTabsConstom"
       v-model="activeTabName"
       type="card"
       style-type="radioGroup"
       class="de-tabs-height"
       :class="isCurrentEdit ? 'de-tabs-edit' : ''"
-      :hide-title="hideTitle"
       :font-color="fontColor"
       :active-color="activeColor"
       :border-color="borderColor"
@@ -27,7 +25,7 @@
       <el-tab-pane
         v-for="(item, index) in element.options.tabList"
         :key="item.name+index"
-        :lazy="!isEdit"
+        :lazy="true"
         :name="item.name"
       >
         <span slot="label">
@@ -77,8 +75,8 @@
           style="width: 100%;height:100%"
         >
           <Preview
-            :ref="'canvasTabRef-'+item.name"
             :component-data="tabCanvasComponentData(item.name)"
+            :ref="'canvasTabRef-'+item.name"
             :canvas-style-data="canvasStyleData"
             :canvas-id="element.id+'-'+item.name"
             :panel-info="panelInfo"
@@ -230,7 +228,7 @@ import { getNowCanvasComponentData } from '@/components/canvas/utils/utils'
 import DeCanvasTab from '@/components/canvas/DeCanvas'
 import Preview from '@/components/canvas/components/editor/Preview'
 import TextAttr from '@/components/canvas/components/TextAttr'
-import _ from 'lodash'
+
 export default {
   name: 'DeTabs',
   components: { TextAttr, Preview, DeCanvasTab, TabUseList, ViewSelect, DataeaseTabs },
@@ -296,7 +294,6 @@ export default {
         'de-stream-media',
         'de-frame'
       ],
-      headClassScroll: '',
       activeTabName: null,
       tabIndex: 1,
       dialogVisible: false,
@@ -316,10 +313,10 @@ export default {
       return Boolean(this.$store.state.dragComponentInfo)
     },
     headClass() {
-      if (this.tabsAreaScroll) {
-        return `tab-head-left ${this.headClassScroll}`
-      } else {
-        return `tab-head-${this.element.style.headPosition} ${this.headClassScroll}`
+      if(this.tabsAreaScroll){
+        return 'tab-head-left'
+      }else{
+        return 'tab-head-' + this.element.style.headPosition
       }
     },
     curCanvasScaleSelf() {
@@ -392,13 +389,6 @@ export default {
         return 'none'
       }
     },
-    hideTitle() {
-      if (this.element && this.element.style && this.element.style.titleHide && typeof this.element.style.titleHide === 'boolean') {
-        return this.element.style.titleHide
-      } else {
-        return false
-      }
-    },
     titleValid() {
       return !!this.textarea && !!this.textarea.trim()
     },
@@ -410,14 +400,6 @@ export default {
     }
   },
   watch: {
-    'outStyle.width': {
-      handler() {
-        this.setTabLayout()
-      }
-    },
-    headClass() {
-      this.setTabLayout()
-    },
     'element.style.carouselEnable': {
       handler(newVal, oldVla) {
         this.initCarousel()
@@ -482,28 +464,24 @@ export default {
     bus.$on('add-new-tab', this.addNewTab)
     this.$nextTick(() => {
       this.activeTabName = this.element.options.tabList[0].name
-    })
+    });
     this.$store.commit('setTabActiveTabNameMap', { tabId: this.element.id, activeTabName: this.activeTabName })
     this.setContentThemeStyle()
   },
   mounted() {
     this.initCarousel()
     this.calcTabLength()
-    this.setTabLayout()
   },
   beforeDestroy() {
     bus.$off('add-new-tab', this.addNewTab)
   },
   methods: {
-    setTabLayout: _.debounce(function () {
-      this.headClassScroll = !!this.$refs?.deTabsConstom?.$refs?.tabsConstom?.$refs?.nav?.scrollable ? 'head-class-scroll' : ''
-    }, 100),
-    calcTabLength() {
-      this.$nextTick(() => {
-        if (this.element.options.tabList.length > 1) {
-          const containerDom = document.getElementById('tab-' + this.element.options.tabList[this.element.options.tabList.length - 1].name)
+    calcTabLength(){
+      this.$nextTick(()=>{
+        if(this.element.options.tabList.length>1){
+          const containerDom = document.getElementById("tab-"+this.element.options.tabList[this.element.options.tabList.length -1].name)
           this.tabsAreaScroll = containerDom.parentNode.scrollWidth > containerDom.parentNode.parentNode.scrollWidth
-        } else {
+        }else{
           this.tabsAreaScroll = false
         }
       })
@@ -512,7 +490,7 @@ export default {
       return this.element.type
     },
     getWrapperChildRefs() {
-      const refsSubAll = []
+      let refsSubAll = []
       const _this = this
       this.element.options.tabList.forEach(tabItem => {
         const refsSub = _this.$refs['canvasTabRef-' + tabItem.name]
@@ -552,7 +530,7 @@ export default {
             if (targetRef) {
               targetRef[0]?.restore()
             }
-          })
+          });
         }, switchTime)
       }
     },
@@ -717,11 +695,9 @@ export default {
       }
       this.$store.dispatch('chart/setViewId', null)
       this.styleChange()
-      this.setTabLayout()
     },
     addTab() {
       this.addNewTab(this.element.id)
-      this.setTabLayout()
     },
 
     addNewTab(componentId) {
@@ -805,10 +781,6 @@ export default {
 .tab-head-center ::v-deep .el-tabs__nav-scroll {
   display: flex;
   justify-content: center;
-}
-
-.head-class-scroll ::v-deep .el-tabs__nav-scroll {
-  display: block !important;
 }
 
 .frame-mask {

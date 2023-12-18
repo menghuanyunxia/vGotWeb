@@ -1,7 +1,7 @@
-package io.dataease.auth.service.impl;
+package io.dataease.commons.service.impl;
 
 import io.dataease.auth.entity.AuthItem;
-import io.dataease.auth.service.ExtAuthService;
+import io.dataease.commons.service.ExtAuthService;
 import io.dataease.commons.constants.SysAuthConstants;
 import io.dataease.plugins.common.base.domain.SysAuth;
 import io.dataease.ext.ExtAuthMapper;

@@ -24,6 +24,6 @@ public interface DynamicMenuApi {
     @ApiOperation("查询")
     @PostMapping("/menus")
     @I18n
-    List<DynamicMenuDto> menus();
+    List<DynamicMenuDto> menus(String userId);
 
 }

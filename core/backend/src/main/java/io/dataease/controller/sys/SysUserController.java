@@ -8,7 +8,7 @@ import io.dataease.auth.annotation.DePermission;
 import io.dataease.auth.annotation.SqlInjectValidator;
 import io.dataease.auth.api.dto.CurrentUserDto;
 import io.dataease.auth.entity.AccountLockStatus;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.commons.constants.DePermissionType;
 import io.dataease.commons.constants.ResourceAuthLevel;
 import io.dataease.commons.constants.SysLogConstants;
@@ -17,7 +17,10 @@ import io.dataease.commons.utils.AuthUtils;
 import io.dataease.commons.utils.PageUtils;
 import io.dataease.commons.utils.Pager;
 import io.dataease.controller.response.ExistLdapUser;
-import io.dataease.controller.sys.request.*;
+import io.dataease.controller.sys.request.SysUserCreateRequest;
+import io.dataease.controller.sys.request.SysUserPwdRequest;
+import io.dataease.controller.sys.request.SysUserStateRequest;
+import io.dataease.controller.sys.request.UserGridRequest;
 import io.dataease.controller.sys.response.AuthBindDTO;
 import io.dataease.controller.sys.response.RoleUserItem;
 import io.dataease.controller.sys.response.SysUserGridResponse;
@@ -66,16 +69,6 @@ public class SysUserController {
 
     @Resource
     private AuthUserService authUserService;
-
-    @ApiIgnore
-    @GetMapping("/transAccount")
-    public Long transAccount(@RequestBody TransAccountRequest request) {
-        String account = request.getAccount();
-        if (StringUtils.isBlank(account)) {
-            DEException.throwException("account can not be null");
-        }
-        return sysUserService.uidByAccount(account);
-    }
 
     @ApiOperation("查询用户")
     @RequiresPermissions("user:read")
@@ -189,7 +182,6 @@ public class SysUserController {
     @PostMapping("/personInfo")
     public CurrentUserDto personInfo() {
         CurrentUserDto user = AuthUtils.getUser();
-        user.setPassword(null);
         return user;
     }
 

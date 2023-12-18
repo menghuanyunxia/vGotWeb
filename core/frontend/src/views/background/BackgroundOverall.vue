@@ -110,7 +110,7 @@
           <el-col style="width: 130px!important;">
             <el-upload
               action=""
-              accept=".jpeg,.jpg,.png,.gif,.svg"
+              accept=".jpeg,.jpg,.png,.gif"
               class="avatar-uploader"
               list-type="picture-card"
               :class="{disabled:uploadDisabled}"
@@ -192,7 +192,6 @@ import { COLOR_PANEL } from '@/views/chart/chart/chart'
 import { uploadFileResult } from '@/api/staticResource/staticResource'
 import bus from '@/utils/bus'
 import BackgroundItemOverall from '@/views/background/BackgroundItemOverall'
-import { hexColorToRGBA } from '@/views/chart/chart/util'
 
 export default {
   name: 'BackgroundOverall',

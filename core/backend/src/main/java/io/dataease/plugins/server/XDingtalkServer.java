@@ -2,7 +2,7 @@ package io.dataease.plugins.server;
 
 import io.dataease.auth.entity.SysUserEntity;
 import io.dataease.auth.entity.TokenInfo;
-import io.dataease.auth.service.AuthUserService;
+import io.dataease.commons.service.AuthUserService;
 import io.dataease.auth.util.JWTUtils;
 import io.dataease.commons.constants.SysLogConstants;
 import io.dataease.commons.exception.DEException;
@@ -12,7 +12,7 @@ import io.dataease.commons.utils.ServletUtils;
 import io.dataease.exception.DataEaseException;
 import io.dataease.i18n.Translator;
 import io.dataease.plugins.common.base.domain.SysUserAssist;
-import io.dataease.plugins.common.util.SpringContextUtil;
+import io.dataease.plugins.config.SpringContextUtil;
 import io.dataease.plugins.xpack.dingtalk.dto.response.DingQrResult;
 import io.dataease.plugins.xpack.dingtalk.dto.response.DingUserEntity;
 import io.dataease.plugins.xpack.dingtalk.dto.response.DingtalkInfo;

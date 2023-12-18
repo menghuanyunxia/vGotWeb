@@ -12,8 +12,6 @@
         :size="size"
         prefix-icon="el-icon-search"
         clearable
-        @input="filterMethod"
-        @clear="filterMethod"
       />
     </div>
     <div class="list">
@@ -33,7 +31,7 @@
           v-model="value"
           @change="handleCheckedChange"
         >
-          <template v-for="item in data">
+          <template v-for="item in data.filter(node => !keyWord || (node.id && node.id.toLocaleUpperCase().includes(keyWord.toLocaleUpperCase())))">
             <el-checkbox
               :key="item.id"
               :label="item.id"
@@ -53,7 +51,7 @@
           @change="changeRadioBox"
         >
           <el-radio
-            v-for="(item, index) in data"
+            v-for="(item, index) in data.filter(node => !keyWord || (node.id && node.id.toLocaleUpperCase().includes(keyWord.toLocaleUpperCase())))"
             :key="index"
             :label="item.id"
             @click.native.prevent="testChange(item)"
@@ -120,9 +118,7 @@ export default {
       show: true,
       data: [],
       isIndeterminate: false,
-      checkAll: false,
-      timeMachine: null,
-      changeIndex: 0
+      checkAll: false
     }
   },
   computed: {
@@ -152,11 +148,6 @@ export default {
     }
   },
   watch: {
-    'value': function(val, old) {
-      if (!this.inDraw) {
-        this.$emit('widget-value-changed', val)
-      }
-    },
     'viewIds': function(value, old) {
       if (typeof value === 'undefined' || value === old) return
       this.setCondition()
@@ -224,7 +215,7 @@ export default {
       if (!token && linkToken) {
         method = linkMultFieldValues
       }
-      const param = { fieldIds: this.element.options.attrs.fieldId.split(','), sort: this.element.options.attrs.sort, keyword: this.keyWord }
+      const param = { fieldIds: this.element.options.attrs.fieldId.split(','), sort: this.element.options.attrs.sort }
       if (this.panelInfo.proxy) {
         param.userId = this.panelInfo.proxy
       }
@@ -242,7 +233,8 @@ export default {
     cssArr: {
       handler: 'changeInputStyle',
       deep: true
-    }
+    },
+    keyWord: 'changeInputStyle'
   },
   created() {
     if (!this.element.options.attrs.sort) {
@@ -259,23 +251,6 @@ export default {
     bus.$off('reset-default-value', this.resetDefaultValue)
   },
   methods: {
-    searchWithKey(index) {
-      this.timeMachine = setTimeout(() => {
-        if (index === this.changeIndex) {
-          this.initOptions()
-        }
-        this.destroyTimeMachine()
-      }, 1500)
-    },
-    destroyTimeMachine() {
-      this.timeMachine && clearTimeout(this.timeMachine)
-      this.timeMachine = null
-    },
-    filterMethod() {
-      this.destroyTimeMachine()
-      this.changeIndex++
-      this.searchWithKey(this.changeIndex)
-    },
     clearDefault(optionList) {
       const emptyOption = !optionList?.length
 
@@ -302,10 +277,8 @@ export default {
       this.checkAll = false
       this.isIndeterminate = false
     },
-    resetDefaultValue(ele) {
-      const id = ele.id
-      const eleVal = ele.options.value.toString()
-      if (this.inDraw && this.manualModify && this.element.id === id && this.value.toString() !== eleVal && this.defaultValueStr === eleVal) {
+    resetDefaultValue(id) {
+      if (this.inDraw && this.manualModify && this.element.id === id) {
         this.value = this.fillValueDerfault()
         this.changeValue(this.value)
 
@@ -354,7 +327,7 @@ export default {
         }
         method({
           fieldIds: this.element.options.attrs.fieldId.split(','),
-          sort: this.element.options.attrs.sort, keyword: this.keyWord
+          sort: this.element.options.attrs.sort
         }).then(res => {
           this.data = this.optionData(res.data)
           this.changeInputStyle()

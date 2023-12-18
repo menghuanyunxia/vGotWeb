@@ -24,13 +24,13 @@
       >
         <el-col :span="4">
           <el-color-picker
-            v-model="mobileSetting.color"
-            :predefine="predefineColors"
-            size="mini"
-            class="color-picker-custom"
-            :disabled="!mobileSetting.customSetting"
-            @change="onChangeType"
-          />
+              v-model="mobileSetting.color"
+              :predefine="predefineColors"
+              size="mini"
+              class="color-picker-custom"
+              :disabled="!mobileSetting.customSetting"
+              @change="onChangeType"
+            />
         </el-col>
         <el-col :span="5">
           <span class="params-title-small">{{ $t('chart.not_alpha') }}</span>
@@ -51,7 +51,7 @@
       >
         <el-upload
           action=""
-          accept=".jpeg,.jpg,.png,.gif,.svg"
+          accept=".jpeg,.jpg,.png,.gif"
           class="avatar-uploader"
           list-type="picture-card"
           :http-request="upload"
@@ -106,7 +106,6 @@ import { mapState } from 'vuex'
 import { deepCopy, imgUrlTrans } from '@/components/canvas/utils/utils'
 import { COLOR_PANEL } from '@/views/chart/chart/chart'
 import { uploadFileResult } from '@/api/staticResource/staticResource'
-import bus from '@/utils/bus'
 
 export default {
   name: 'MobileBackgroundSelector',
@@ -142,7 +141,6 @@ export default {
       const canvasStyleData = deepCopy(this.canvasStyleData)
       canvasStyleData.panel.mobileSetting = this.mobileSetting
       this.$store.commit('setCanvasStyle', canvasStyleData)
-      bus.$emit('mobile-status-change', 'setCanvasStyle', canvasStyleData)
       this.$store.commit('recordSnapshot', 'commitStyle')
     },
     onChangeType() {
@@ -281,6 +279,7 @@ span {
   color: var(--TextPrimary, #1F2329) !important;
   line-height: 22px;
 }
+
 
 ::v-deep .el-slider__input {
   width: 40px;
